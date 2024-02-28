@@ -58,10 +58,6 @@ public class UsersController {
         return new ResponseEntity<>(userService.forgotPassword(email), HttpStatus.OK);
     }
 
-    @PostMapping("/resetPassword")
-    public Boolean resetPassword(@RequestBody Map<String, String> map) {
-        return this.userService.resetPassword(map);
-    }
 
     @PostMapping("/changePassword")
     public ResponseWrapperDto changePassword(@RequestBody Map<String, String> map) {

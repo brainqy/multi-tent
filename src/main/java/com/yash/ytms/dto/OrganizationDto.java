@@ -15,6 +15,7 @@ public class OrganizationDto {
 
     private Long id;
     private String orgName;
+    private String orgCode;
     private String orgUsername;
 
     // Constructors, getters, and setters

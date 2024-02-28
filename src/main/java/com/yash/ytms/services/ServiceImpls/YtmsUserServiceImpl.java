@@ -4,19 +4,19 @@ import com.yash.ytms.constants.RequestStatusTypes;
 import com.yash.ytms.constants.UserAccountStatusTypes;
 import com.yash.ytms.constants.UserRoleTypes;
 import com.yash.ytms.domain.LoginHistory;
+import com.yash.ytms.domain.Organization;
 import com.yash.ytms.domain.YtmsUser;
-import com.yash.ytms.dto.ProfileCompletionDto;
-import com.yash.ytms.dto.ResponseWrapperDto;
-import com.yash.ytms.dto.UserRoleDto;
-import com.yash.ytms.dto.YtmsUserDto;
+import com.yash.ytms.dto.*;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.YtmsUserRepository;
 import com.yash.ytms.security.userdetails.CustomUserDetails;
+import com.yash.ytms.services.IServices.IOrganizationService;
 import com.yash.ytms.services.IServices.IReferralService;
 import com.yash.ytms.services.IServices.IUserRoleService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import com.yash.ytms.util.EmailUtil;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -49,6 +49,8 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     private YtmsUserRepository userRepository;
     @Autowired
     private IReferralService referralService;
+    @Autowired
+    private IOrganizationService organizationService;
 
     @Autowired
     private IUserRoleService userRoleService;
@@ -63,41 +65,32 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     private EmailUtil emailUtil;
 
     @Override
+    @Transactional
     public YtmsUserDto createNewUser(YtmsUserDto userDto) {
+        OrganizationDto defaultOrg =this.organizationService.getDefaultOrganization();
+        // Save the organization first
+        Organization organization = modelMapper.map(defaultOrg,Organization.class);
+
         YtmsUser user = null;
         if (ObjectUtils.isNotEmpty(userDto)) {
-
-            user = this
-                    .userRepository
-                    .getUserByEmail(userDto.getEmailAdd());
-
+            user = userRepository.getUserByEmail(userDto.getEmailAdd());
             if (ObjectUtils.isEmpty(user)) {
-                //user do not exist, new user will be created
                 if (StringUtils.equals(userDto.getPassword(), userDto.getConfirmPassword())) {
-
-                    UserRoleDto userRoleDto = this
-                            .userRoleService
-                            .getUserRoleByRoleName(UserRoleTypes.ROLE_REQUESTER.toString());
-
+                    String newEmail = new String(Base64.getDecoder().decode(userDto.getRef()));
+                    userDto.setRef(newEmail);
+                    UserRoleDto userRoleDto = userRoleService.getUserRoleByRoleName(UserRoleTypes.ROLE_REQUESTER.toString());
                     userDto.setUserRole(userRoleDto);
-                    this.referralService.setReferralEntity(userDto);
+                    referralService.setReferralEntity(userDto);
 
-                    user = this
-                            .modelMapper
-                            .map(userDto, YtmsUser.class);
-
-                    user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
+                    user = modelMapper.map(userDto, YtmsUser.class);
+                    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
                     user.setAccountStatus(UserAccountStatusTypes.PENDING);
 
-                    //reassigned with the new created data
-                    user = this
-                            .userRepository
-                            .save(user);
+                    // Associate the saved organization with the user
+                    user.setOrganization(organization);
 
-                    //re-assigning the dto class with the new data
-                    userDto = this
-                            .modelMapper
-                            .map(user, YtmsUserDto.class);
+                    user = userRepository.save(user);
+                    userDto = modelMapper.map(user, YtmsUserDto.class);
                 } else {
                     throw new ApplicationException("Password did not matched, please try again");
                 }
@@ -107,9 +100,9 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         } else {
             throw new ApplicationException("Invalid user details");
         }
-
         return userDto;
     }
+
 
     @Override
     public YtmsUserDto getUserByEmailAdd(String emailAdd) {

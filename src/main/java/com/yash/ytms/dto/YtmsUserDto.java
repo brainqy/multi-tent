@@ -3,7 +3,10 @@ package com.yash.ytms.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yash.ytms.constants.UserAccountStatusTypes;
+import com.yash.ytms.domain.Referral;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Project Name - ytms-api
@@ -28,6 +31,7 @@ public class YtmsUserDto {
     private Integer coins=0;
     private String ref;
     private String refto;
+    private List<ReferralDto> referrals;
 
     private UserRoleDto userRole;
 

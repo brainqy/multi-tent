@@ -1,7 +1,9 @@
 package com.yash.ytms.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +19,8 @@ import java.util.Set;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Organization {
 
     @Id
@@ -24,7 +28,10 @@ public class Organization {
     private Long id;
 
     private String orgName;
+
     private String orgUsername;
+    @Column(unique = true)
+    private String orgCode;
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<YtmsUser> users = new HashSet<>();

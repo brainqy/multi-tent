@@ -3,6 +3,7 @@ package com.yash.ytms.repository;
 import com.yash.ytms.domain.Referral;
 import com.yash.ytms.domain.UserRole;
 import com.yash.ytms.domain.YtmsUser;
+import com.yash.ytms.dto.ReferralDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,5 +20,4 @@ import java.util.List;
 public interface ReferralRepository extends JpaRepository<Referral, Long> {
     @Query("SELECT r FROM Referral r WHERE r.referrer = :user")
     List<Referral> findByReferrerId(YtmsUser user);
-
 }

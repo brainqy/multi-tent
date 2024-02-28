@@ -10,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * Description of the class or file.
  *
@@ -29,9 +31,22 @@ public class IOrganizationServiceImpl implements IOrganizationService {
     private ModelMapper mapper;
     @Override
     public Organization createOrganization(OrganizationDto organizationDto) {
+       String tenantId= UUID.randomUUID().toString();
+        tenantId = tenantId.toUpperCase().substring(0, 6);
         organizationDto.setOrgName(organizationDto.getOrgName());
         organizationDto.setOrgUsername(organizationDto.getOrgUsername());
+        organizationDto.setOrgCode(tenantId);
         Organization organization = this.mapper.map(organizationDto, Organization.class);
         return organizationRepository.save(organization);
+    }
+
+    @Override
+    public OrganizationDto getDefaultOrganization() {
+        OrganizationDto orgDto= new OrganizationDto();
+        orgDto.setId(1l);
+        orgDto.setOrgUsername("BRAINQY");
+        orgDto.setOrgName("BRAINQY Solutions");
+        orgDto.setOrgCode("BRAINQY");
+        return orgDto;
     }
 }

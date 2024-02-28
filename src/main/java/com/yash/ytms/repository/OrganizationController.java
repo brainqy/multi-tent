@@ -6,6 +6,7 @@ import com.yash.ytms.services.IServices.IOrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -17,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 14-02-2024
  */
 @RestController
+@RequestMapping("/org")
 public class OrganizationController {
 
         @Autowired
         private IOrganizationService organizationService;
 
-        @PostMapping("/organization")
+        @PostMapping("/create_org")
         public Organization createOrganization(@RequestBody OrganizationDto organization) {
             return organizationService.createOrganization(organization);
         }

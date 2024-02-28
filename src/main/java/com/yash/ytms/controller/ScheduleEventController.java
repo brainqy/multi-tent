@@ -1,11 +1,17 @@
 package com.yash.ytms.controller;
 
+import com.yash.ytms.domain.Referral;
+import com.yash.ytms.dto.ReferralDto;
 import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.dto.ScheduleEventDto;
+import com.yash.ytms.dto.YtmsUserDto;
+import com.yash.ytms.services.IServices.IReferralService;
 import com.yash.ytms.services.IServices.IScheduleEventService;
+import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +31,17 @@ public class ScheduleEventController {
 
     @Autowired
     private IScheduleEventService scheduleEventService;
+    @Autowired
+    IReferralService referralService;
+    @Autowired
+    IYtmsUserService userService;
 
     @GetMapping("/get/all")
     public ResponseEntity<List<ScheduleEventDto>> getAllScheduleEvents() {
         List<ScheduleEventDto> scheduleEvents = this.scheduleEventService.getAllScheduleEvents();
         return new ResponseEntity<>(scheduleEvents, HttpStatus.OK);
     }
+
 
     @GetMapping("/get/{eventId}")
     public ResponseEntity<ScheduleEventDto> getScheduleEventById(@PathVariable Integer eventId) {

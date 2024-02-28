@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * Project Name - ytms-api
  * <p>
@@ -49,7 +51,6 @@ public class LoginSignUpController {
                 .createNewUser(userDto);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
-
     @GetMapping("/get/user")
     public ResponseEntity<YtmsUserDto> getUserByEmail(@RequestParam String email) {
         YtmsUserDto user = this
