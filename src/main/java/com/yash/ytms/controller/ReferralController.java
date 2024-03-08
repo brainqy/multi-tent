@@ -1,5 +1,4 @@
 package com.yash.ytms.controller;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Description of the class or file.
@@ -45,11 +45,13 @@ public class ReferralController {
     }
     @GetMapping("/getReferrals")
     public ResponseEntity<List<ReferralDto>> getReferrals(Authentication authentication) {
+
         // Get the authenticated user's email
         String userEmail = authentication.getName();
 
         // Retrieve user details based on email
         YtmsUserDto userDto = userService.getUserByEmailAdd(userEmail);
+
         // Generate referral link
         String referralLink = "http://localhost:8083/register?ref=" + userDto.getEmailAdd();
 

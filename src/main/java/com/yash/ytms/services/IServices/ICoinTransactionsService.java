@@ -2,7 +2,6 @@ package com.yash.ytms.services.IServices;
 
 import com.yash.ytms.domain.CoinTransaction;
 import com.yash.ytms.dto.CoinTransactionDto;
-
 import java.util.List;
 
 /**
@@ -16,4 +15,5 @@ import java.util.List;
 public interface ICoinTransactionsService {
     List<CoinTransactionDto> findTransactionsByUser(String email);
     Integer getUserBalance(String email);
+
 }

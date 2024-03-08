@@ -34,6 +34,7 @@ public class YtmsUserDto {
     private List<ReferralDto> referrals;
 
     private UserRoleDto userRole;
+    private List<Referral> referrals;
 
     @JsonIgnore
     public String getPassword() {
