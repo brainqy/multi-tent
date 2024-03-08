@@ -19,15 +19,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IcsRequest {
-    private String eventName;
+    private String title; // Changed from eventName to title
     private String organizerName;
     private String organizerEmail;
-    private List<String> attendees;
-    private String subject;
+    private List<String> attendees; // Changed from String to List<String>
     private String description;
     private String location;
     private Date startTime;
     private Date endTime;
-
+    private String primaryColor; // Added primaryColor field
     // Constructors, getters, and setters
 }

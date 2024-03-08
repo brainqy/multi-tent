@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
+import java.util.List;
 
 /**
  * Project Name - ytms-api
@@ -52,11 +53,13 @@ public class EmailUtil {
                 	        
                 """.formatted(Base64.getEncoder().encodeToString(email.getBytes())), true);     javaMailSender.send(mimeMessage);
     }
-    public void sendEmailWithAttachment(byte[] attachment,String refEmail) throws MessagingException {
+    public void sendEmailWithAttachment(byte[] attachment, List<String> refEmail) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setTo(refEmail);
+        for (String emailAddress : refEmail) {
+            helper.addTo(emailAddress);
+        }
         helper.setSubject("Event Invitation");
         helper.setText("Please find the event attachment.");
 
