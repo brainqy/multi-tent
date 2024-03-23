@@ -1,4 +1,4 @@
-package com.yash.ytms.repository;
+package com.yash.ytms.controller;
 
 import com.yash.ytms.domain.Organization;
 import com.yash.ytms.dto.OrganizationDto;

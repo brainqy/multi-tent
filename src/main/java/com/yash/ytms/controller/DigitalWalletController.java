@@ -1,6 +1,7 @@
 package com.yash.ytms.controller;
 
 import com.yash.ytms.domain.CoinTransaction;
+import com.yash.ytms.dto.CoinTransactionDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.services.IServices.ICoinTransactionsService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
@@ -31,7 +32,7 @@ public class DigitalWalletController {
     @GetMapping("/wallet")
     public ResponseEntity<?> getWallet(Authentication authentication) {
         YtmsUserDto userDto = userService.getUserByEmailAdd(authentication.getName());
-        List<CoinTransaction> transactions = coinTransactionsService.findTransactionsByUser(userDto.getEmailAdd());
+        List<CoinTransactionDto> transactions = coinTransactionsService.findTransactionsByUser(userDto.getEmailAdd());
 
         return ResponseEntity.ok(transactions);
     }
