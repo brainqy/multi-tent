@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,4 +27,6 @@ public class ContentReportDto {
     private String comment;
     private Long contentId;
     private String link;
+    private LocalDateTime reportedAt;
+    private boolean isOwner;
 }

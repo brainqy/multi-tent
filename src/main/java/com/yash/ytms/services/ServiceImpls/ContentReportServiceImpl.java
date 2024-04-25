@@ -2,13 +2,18 @@ package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.ContentReport;
 import com.yash.ytms.dto.ContentReportDto;
+import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ContentReportRepository;
 import com.yash.ytms.services.IServices.ContentReportService;
+import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +32,8 @@ import java.util.stream.Collectors;
 public class ContentReportServiceImpl implements ContentReportService {
     @Autowired
     private ContentReportRepository contentReportRepository;
+    @Autowired
+    private IYtmsUserService userService;
     @Autowired
     ModelMapper modelMapper;
     @Override
@@ -47,8 +54,14 @@ public class ContentReportServiceImpl implements ContentReportService {
     @Override
     public ContentReportDto saveReportContent(ContentReportDto contentReportDto) {
         ContentReport contentRepport = modelMapper.map(contentReportDto, ContentReport.class);
-         contentReportRepository.save(contentRepport);
-         return  contentReportDto;
+        LocalDateTime timeNOw=LocalDateTime.now();
+        contentRepport.setReportedAt(timeNOw);
+        contentReportRepository.save(contentRepport);
+
+        ContentReportDto contentFinalDto = modelMapper.map(contentRepport, ContentReportDto.class);
+        YtmsUserDto ytmsUserDto = userService.getUserByEmailAdd(contentRepport.getReportedBy());
+        contentFinalDto.setReportedBy(ytmsUserDto.getFullName());
+        return  contentFinalDto;
     }
 
     @Override
@@ -77,8 +90,17 @@ public class ContentReportServiceImpl implements ContentReportService {
         HashMap<String, Object> map = new HashMap<>();
         List<ContentReport> contentReports = contentReportRepository.getContentReportyLink(link);
         List<ContentReportDto> contentReportDtos = new ArrayList<>();
+         Authentication auth= SecurityContextHolder.getContext().getAuthentication();
+         String loggedInUser= auth.getName();
         for (ContentReport contentReport : contentReports) {
             ContentReportDto contentReportDto = modelMapper.map(contentReport, ContentReportDto.class);
+            YtmsUserDto ytmsUserDto = userService.getUserByEmailAdd(contentReport.getReportedBy());
+            if(contentReport.getReportedBy().equals(loggedInUser)){
+                contentReportDto.setOwner(true);
+            }else {
+                contentReportDto.setOwner(false);
+            }
+            contentReportDto.setReportedBy(ytmsUserDto.getFullName());
             contentReportDtos.add(contentReportDto);
         }
         map.put("contentDto", contentReportDtos);

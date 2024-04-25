@@ -54,7 +54,7 @@ List<SectionDataDto> data= new ArrayList<>();
         LocalDateTime localDateTime= LocalDateTime.now();
         wrapper.setCreatedAt(localDateTime);
         SectionDataWrapper wrapperEntity = modelMapper.map(wrapper, SectionDataWrapper.class);
-        atsRepository.save(wrapperEntity);
+        //atsRepository.save(wrapperEntity);
         return wrapper;
     }
 

@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,8 +25,11 @@ public class InterviewSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String day;
+    @NotNull
     private String slot;
+    @NotNull
     private String interviewType;
     private String kindOfInterviewType;
     private String status;

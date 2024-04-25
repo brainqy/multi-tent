@@ -1,10 +1,12 @@
 package com.yash.ytms.domain;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,10 +30,13 @@ import java.util.List;
         private String contentType;
         private List<String> tags;
         private String reportedBy;
+        @NotNull
         private double rating;
+        @NotNull
         private String comment;
         private Long contentId;
         private String link;
         private double avgRating;
+    private LocalDateTime reportedAt;
 
     }

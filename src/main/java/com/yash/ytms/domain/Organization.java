@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,9 +27,9 @@ public class Organization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @NotNull
     private String orgName;
-
+    @NotNull
     private String orgUsername;
     @Column(unique = true)
     private String orgCode;

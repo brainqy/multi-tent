@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +30,7 @@ public class ScheduleEvent {
     private Integer eventId;
 
     @Column(name = "title")
+    @NotNull
     private String title;
 
     @Temporal(TemporalType.TIMESTAMP)

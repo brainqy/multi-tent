@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,11 +27,13 @@ public class Referral {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "referrer_id", referencedColumnName = "email_add")
     private YtmsUser referrer;
-
+    @NotNull
     private String referralCode;
+    @NotNull
     private String email;
     private String status;
     private LocalDateTime referredAt;
