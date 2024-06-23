@@ -7,8 +7,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Description of the class or file.
@@ -24,7 +26,7 @@ public class AtsScanServiceImpl implements AtsScanService {
     private ModelMapper modelMapper;
     @Autowired
     private AtsRepository atsRepository;
-    public SectionDataWrapperDto generateReports(String resume, String jobDescription){
+    public SectionDataWrapperDto generateReports(String resume, String jobDescription, Principal principal){
 double searchabilityWeight=0.1;
 double recruiterTipsWeihgt=0.2;
 double formattingWeight=0.1;
@@ -52,17 +54,27 @@ List<SectionDataDto> data= new ArrayList<>();
         wrapper.setAllData(data);
         wrapper.setFinalProgress(finalProgress);
         LocalDateTime localDateTime= LocalDateTime.now();
-        wrapper.setCreatedAt(localDateTime);
+        wrapper.setCreatedAt(localDateTime.toString());
         SectionDataWrapper wrapperEntity = modelMapper.map(wrapper, SectionDataWrapper.class);
-        //atsRepository.save(wrapperEntity);
+        atsRepository.save(wrapperEntity);
         return wrapper;
     }
 
     @Override
-    public SectionDataWrapperDto getLatestReport() {
+    public SectionDataWrapperDto getLatestReport(Principal principal) {
         SectionDataWrapper latestReport= atsRepository.findFirstByOrderByCreatedAtDesc();
         return modelMapper.map(latestReport,SectionDataWrapperDto.class);
 
+    }
+
+    @Override
+    public List<SectionDataWrapperDto> getScanHistoryByUser(Principal principal) {
+        String userName= principal.getName();
+        List<SectionDataWrapper> scanHistory = atsRepository.findByUser(userName);
+        List<SectionDataWrapperDto> scanHistoryDto = scanHistory.stream()
+                .map(wrapper -> modelMapper.map(wrapper, SectionDataWrapperDto.class))
+                .collect(Collectors.toList());
+        return scanHistoryDto;
     }
 
     public SectionDataDto generateSerchabilityReport(String resume, String jobDescription) {

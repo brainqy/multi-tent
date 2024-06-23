@@ -22,17 +22,14 @@ import java.util.List;
 
 public class SectionData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int section_id;
     private String section;
     private double percentage;
     private int issues;
 
-    @ManyToOne
-    @JoinColumn(name = "section_data_wrapper_id")
-    private SectionDataWrapper sectionDataWrapper;
-
-    @OneToMany(mappedBy = "sectionData", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+     @OneToMany(cascade = CascadeType.ALL, targetEntity = DataItem.class)
+    @JoinColumn(name="section_id",referencedColumnName = "section_id")
     private List<DataItem> data;
 
 }

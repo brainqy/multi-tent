@@ -1,7 +1,11 @@
 package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.forum.ForumDto;
+import com.yash.ytms.dto.QuestionDto;
 import com.yash.ytms.services.IServices.ForumService;
+import com.yash.ytms.services.IServices.QuestionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -26,6 +30,9 @@ public class ScheduledServiceImpl {
     @Autowired
     ForumService forumService;
     private final ChatClient chatClient;
+    @Autowired
+    QuestionService questionService;
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledServiceImpl.class);
 
     public ScheduledServiceImpl(ChatClient chatClient) {
         this.chatClient = chatClient;
@@ -75,5 +82,57 @@ System.out.println(forumDto.toString());
         ForumDto blogging = outputParser.parse(generation.getOutput().getContent());
         return blogging;
     }
+    //@Scheduled(fixedRate = 10000)
+    public void createQuestionScheduledTask() {
+        QuestionDto questionDto = null;
+
+            questionDto = generateQuestion("JAVA ,Springboot, Rest API ,Collections, multithreading,Spring Security,Java 8 Features, Microservices");
+            System.out.println(questionDto.toString());
+        try {
+            // You can set other properties as needed
+            questionService.createQuestion(questionDto);
+            logger.info("Question creation scheduled task executed successfully.");
+        } catch (Exception e) {
+            logger.info("error creation this question ", questionDto);
+            logger.error("Error occurred during question creation scheduled task.", e);
+        }
+
+    }
+
+    private QuestionDto generateQuestion(String title) {
+        var outputParser = new BeanOutputParser<>(QuestionDto.class);
+
+        String userMessage =
+                """
+                Create a new question related to {title}:
+                Type (choose one: multiple choice, true/false): {questionType}
+                Question: {question}
+                Options (for multiple choice, provide comma-separated options; e.g., A: Option 1, B: Option 2, C: Option 3, D: Option 4; for true/false, provide true/false): {options}
+                Answer (choose one from the options): {answer}
+                Explanation: {explanation}
+                Tags: {tags}
+                {format}
+                """;
+
+        // Provide actual values for template variables
+        Map<String, Object> variables = Map.of(
+                "title", title,
+                "questionType", "",
+                "question", "",
+                "options", "",
+                "answer", "",
+                "explanation", "",
+                "tags", "",
+                "format", outputParser.getFormat()
+        );
+
+        PromptTemplate promptTemplate = new PromptTemplate(userMessage, variables);
+        Prompt prompt = promptTemplate.create();
+        Generation generation = chatClient.call(prompt).getResult();
+
+        QuestionDto questionDto = outputParser.parse(generation.getOutput().getContent());
+        return questionDto;
+    }
+
 
 }

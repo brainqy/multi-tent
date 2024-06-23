@@ -23,10 +23,13 @@ import java.util.List;
 
 public class SectionDataWrapper {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int wrapper_id;
-    @OneToMany(mappedBy = "sectionDataWrapper", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(targetEntity= SectionData.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "wrapper_id",referencedColumnName = "wrapper_id")
     private List<SectionData> allData;
     private double finalProgress;
+    private String jobTitle;
     private LocalDateTime createdAt;
+    private  String createdBy;
 }

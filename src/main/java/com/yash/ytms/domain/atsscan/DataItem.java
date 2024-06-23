@@ -22,16 +22,18 @@ import java.util.List;
 
 public class DataItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int data_id;
     private String title;
     private boolean infoIcon;
     private  double weight;
 
 
-    @OneToMany(mappedBy = "dataItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ContentItem> content;
     @ManyToOne
-    @JoinColumn(name = "section_data_id")
+    @JoinColumn(name = "section_id")
     private SectionData sectionData;
+
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = ContentItem.class)
+    @JoinColumn(name="data_id",referencedColumnName = "data_id")
+    private List<ContentItem> content;
 }

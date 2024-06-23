@@ -13,6 +13,8 @@ import com.yash.ytms.security.userdetails.CustomUserDetailsServiceImpl;
 import com.yash.ytms.services.IServices.IAuthService;
 import com.yash.ytms.services.IServices.IDailyStreakService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.internal.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class AuthServiceImpl implements IAuthService {
 
     @Autowired
     private JwtTokenHelper tokenHelper;
+    @Autowired
+    private HttpServletResponse response;
     @Autowired
     private IYtmsUserService userService;
     @Autowired
@@ -68,6 +72,15 @@ public class AuthServiceImpl implements IAuthService {
                     .generateToken(userDetails);
 
             authResponse.setToken(token);
+
+            // Create a cookie to store the token
+            Cookie cookie = new Cookie("jwtToken", token);
+            cookie.setHttpOnly(true); // Ensures cookie is not accessible through JavaScript
+            cookie.setMaxAge(24 * 60 * 60); // Set cookie expiry time (in seconds), here it's set to 1 day
+            cookie.setPath("/"); // Set cookie path
+
+            response.addCookie(cookie); // Add the cookie to the response
+
             authResponse.setMessage("Successfully Logged In");
             this.userService.SetLoginHistory(userDetails.getEmailAdd());
             DailyStreakDto dailyStreak = this.dailyStreakService.getDailyStreak(userDetails.getEmailAdd());

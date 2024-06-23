@@ -1,19 +1,26 @@
-package com.yash.ytms.controller;
+package com.yash.ytms.services.ServiceImpls;
 
-import com.yash.ytms.domain.atsscan.GenerateReportRequest;
+import com.yash.ytms.domain.atsscan.SectionDataWrapper;
 import com.yash.ytms.domain.atsscan.SectionDataWrapperDto;
-import com.yash.ytms.dto.QuestionDto;
 import com.yash.ytms.exception.ApplicationException;
+import com.yash.ytms.repository.AtsRepository;
+import com.yash.ytms.services.IServices.AtsScanService;
+import org.modelmapper.ModelMapper;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.parser.BeanOutputParser;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Description of the class or file.
@@ -21,40 +28,21 @@ import java.util.Map;
  * @author Dnyaneshwar Somwanshi
  * @version 1.0
  * @project multi-tent
- * @since 16-04-2024
+ * @since 03-05-2024
  */
-@RestController
-public class AIATSController {
-    private final ChatClient chatClient;
-
-    public AIATSController(ChatClient chatClient) {
-        this.chatClient = chatClient;
-    }
-
-    @GetMapping("/topAthlete")
-    public String topAthlete(@RequestParam("subject") String subject) {
-        return chatClient.call("give me the list of "+subject+" in the world in json format with their income, family, sports team");
-    }
-    @PostMapping("/prompt")
-        public String getReport(@RequestBody GenerateReportRequest request){
-        String resume = request.getResume();
-        String jobDescription = request.getJobDescription();
-        return chatClient.call("generate a json  report by comparing "+resume+" and "+jobDescription+" in json format with allData:[{section:Searchability,\n" +
-                " percentage:calculate % based on weight and true tickIcons,issues:count number of false tickIcon,\n" +
-                " data:[{title:Contact info,infoIcon:true,content:[{tickIcon:true if phone number is found,contentValue:check phone number.},{tickIcon:true if email is found,contentValue:Reason why behind the tikIcon status.},{tickIcon:true if address is found,contentValue:Reason why behind the tikIcon status.}],weight:5},\n" +
-                " {section:Recruiter Tips,\n" +
-                " percentage:calculate % based on weight and true tickIcons,issues:count number of false tickIcon,\n" +
-                " data:[{title:Word count ,infoIcon:true,content:[{tickIcon:true if word count > 600 words,contentValue: Reason why behind the tikIcon status.},{tickIcon:true if any specific achievment found ,contentValue:Reason why behind the tikIcon status ,mention  meaurable results (e.g. time saved, increase in sales, etc)..},{tickIcon:true if job matches seniority level,contentValue:Reason why behind the tikIcon status, mention seniority level .provide sugestion if not matches.},{tickIcon:true if negative words are not found,contentValue:mention negative words in resume if found .}],weight:5},\n" +
-                "],finalProgress:as final % aggregate progress");
-
-}
-
-
-    @PostMapping("/generateGpt")
-    public SectionDataWrapperDto generateReport(@RequestBody GenerateReportRequest request) {
+@Service
+@Qualifier("gptScan")
+public class AtsScanGptServiceImpl implements AtsScanService {
+    @Autowired
+    private ChatClient chatClient;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private AtsRepository atsRepository;
+    @Override
+    public SectionDataWrapperDto generateReports(String resume, String jobDescription, Principal principal) {
         var outputParser = new BeanOutputParser<>(SectionDataWrapperDto.class);
-        String resume = request.getResume();
-        String jobDescription = request.getJobDescription();
+
 
         String userMessage =
                 """
@@ -144,40 +132,28 @@ public class AIATSController {
         } catch (Exception e) {
             throw new ApplicationException("Error while calling ai api");
         }
+        SectionDataWrapper sectionDataWrapper = modelMapper.map(reportDto,SectionDataWrapper.class);
+        sectionDataWrapper.setCreatedAt(LocalDateTime.now());
+        sectionDataWrapper.setCreatedBy(principal.getName());
+        atsRepository.save(sectionDataWrapper);
         return reportDto;
     }
 
+    @Override
+    public SectionDataWrapperDto getLatestReport(Principal principal) {
+        SectionDataWrapper latestReport= atsRepository.findFirstByOrderByCreatedAtDesc();
+        latestReport.setCreatedBy(principal.getName());
+        return modelMapper.map(latestReport,SectionDataWrapperDto.class);
 
-    private String generateSections() {
-        return """
-        - Section: "Searchability"
-          Percentage: 0.0
-          Issues: 5
-          Data:
-            - Title: "Contact info"
-              InfoIcon: true
-              Content:
-                - TickIcon: false
-                  ContentValue: {section1content1Value1}
-                - TickIcon: false
-                  ContentValue: {section1content1Value2}
-              Weight: 0.0
-            - Title: "Job title match"
-              InfoIcon: true
-              Content:
-                - TickIcon: false
-                  ContentValue: {section1content2Value1}
-              Weight: 0.0
-            - Title: "Section headings"
-              InfoIcon: true
-              Content:
-                - TickIcon: false
-                  ContentValue: {section1content3Value1}
-                - TickIcon: false
-                  ContentValue: {section1content3Value2}
-              Weight: 0.0
-        """;
     }
 
-
+    @Override
+    public List<SectionDataWrapperDto> getScanHistoryByUser(Principal principal) {
+        String userName= principal.getName();
+        List<SectionDataWrapper> scanHistory = atsRepository.findByUser(userName);
+        List<SectionDataWrapperDto> scanHistoryDto = scanHistory.stream()
+                .map(wrapper -> modelMapper.map(wrapper, SectionDataWrapperDto.class))
+                .collect(Collectors.toList());
+        return scanHistoryDto;
+    }
 }

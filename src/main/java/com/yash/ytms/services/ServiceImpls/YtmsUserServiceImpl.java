@@ -76,8 +76,11 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
             user = userRepository.getUserByEmail(userDto.getEmailAdd());
             if (ObjectUtils.isEmpty(user)) {
                 if (StringUtils.equals(userDto.getPassword(), userDto.getConfirmPassword())) {
-                    String newEmail = new String(Base64.getDecoder().decode(userDto.getRef()));
-                    userDto.setRef(newEmail);
+                    if(userDto.getRef()!=null){
+                        String newEmail = new String(Base64.getDecoder().decode(userDto.getRef()));
+                        userDto.setRef(newEmail);
+                    }
+
                     UserRoleDto userRoleDto = userRoleService.getUserRoleByRoleName(UserRoleTypes.ROLE_REQUESTER.toString());
                     userDto.setUserRole(userRoleDto);
                     referralService.setReferralEntity(userDto);

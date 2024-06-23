@@ -22,5 +22,7 @@ import java.util.List;
 public class SectionDataWrapperDto {
      private List<SectionDataDto> allData;
     private double finalProgress;
-    private LocalDateTime createdAt;
+    private String jobTitle;
+    private String createdAt;
+    private  String createdBy;
 }

@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Description of the class or file.
  *
@@ -16,4 +18,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AtsRepository extends JpaRepository<SectionDataWrapper,Long> {
     SectionDataWrapper findFirstByOrderByCreatedAtDesc();
+
+    @Query("SELECT s FROM SectionDataWrapper s WHERE s.createdBy = :createdBy")
+
+    List<SectionDataWrapper> findByUser(String createdBy);
 }

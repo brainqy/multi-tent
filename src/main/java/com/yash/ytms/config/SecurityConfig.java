@@ -81,6 +81,7 @@ public class SecurityConfig {
         corsConfiguration.addAllowedMethod("GET");
         corsConfiguration.addAllowedMethod("DELETE");
         corsConfiguration.addAllowedMethod("PUT");
+        corsConfiguration.addAllowedMethod("PATCH");
         corsConfiguration.addAllowedMethod("OPTIONS");
         corsConfiguration.setMaxAge(3600L);
 

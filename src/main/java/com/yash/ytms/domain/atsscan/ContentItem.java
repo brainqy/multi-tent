@@ -20,11 +20,9 @@ import lombok.NoArgsConstructor;
 
 public class ContentItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int content_id;
     private boolean tickIcon;
     private String contentValue;
-    @ManyToOne
-    @JoinColumn(name = "data_item_id")
-    private DataItem dataItem;
+
 }
