@@ -69,13 +69,18 @@ List<SectionDataDto> data= new ArrayList<>();
 
     @Override
     public List<SectionDataWrapperDto> getScanHistoryByUser(Principal principal) {
-        String userName= principal.getName();
-        List<SectionDataWrapper> scanHistory = atsRepository.findByUser(userName);
-        List<SectionDataWrapperDto> scanHistoryDto = scanHistory.stream()
-                .map(wrapper -> modelMapper.map(wrapper, SectionDataWrapperDto.class))
-                .collect(Collectors.toList());
+        String userName = principal.getName();
+        Optional<List<SectionDataWrapper>> optionalScanHistory = Optional.ofNullable(atsRepository.findByUser(userName));
+
+        List<SectionDataWrapperDto> scanHistoryDto = optionalScanHistory
+                .map(scanHistory -> scanHistory.stream()
+                        .map(wrapper -> modelMapper.map(wrapper, SectionDataWrapperDto.class))
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+
         return scanHistoryDto;
     }
+
 
     public SectionDataDto generateSerchabilityReport(String resume, String jobDescription) {
         List<DataItemDto> dataItems = new ArrayList<>();

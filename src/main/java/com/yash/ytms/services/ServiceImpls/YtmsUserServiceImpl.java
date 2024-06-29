@@ -29,10 +29,8 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Project Name - ytms-api
@@ -231,17 +229,16 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
 
     @Override
     public List<YtmsUserDto> getAllTrainers() {
-        List<YtmsUser> allTrainers = this.userRepository.findAllTrainers();
-        if (!allTrainers.isEmpty()) {
-            return allTrainers
-                    .stream()
-                    .map(yur -> this
-                            .modelMapper
-                            .map(yur, YtmsUserDto.class))
-                    .toList();
-        } else
-            throw new ApplicationException("No Trainers found !");
+        Optional<List<YtmsUser>> optionalAllTrainers = Optional.ofNullable(this.userRepository.findAllTrainers());
+
+        return optionalAllTrainers
+                .filter(allTrainers -> !allTrainers.isEmpty())
+                .map(allTrainers -> allTrainers.stream()
+                        .map(yur -> this.modelMapper.map(yur, YtmsUserDto.class))
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new ApplicationException("No Trainers found!"));
     }
+
 
     @Override
     public String SetLoginHistory(String currentUserEmail) {

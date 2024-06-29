@@ -1,3 +1,5 @@
 spring:
   ai:
     openai.api-key: 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
+  profiles:
+    active: prod
