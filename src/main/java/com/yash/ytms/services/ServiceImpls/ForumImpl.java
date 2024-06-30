@@ -94,7 +94,7 @@ public class ForumImpl implements ForumService {
 
         // Update createdBy to full name
         forums.forEach(forumDto -> {
-            String fullName = userRepository.getUserByEmail(forumDto.getCreatedBy()).getFullName();
+            String fullName = userRepository.getUserByEmail(forumDto.getCreatedBy()).get() .getFullName();
 
             forumDto.setCreatedBy(fullName);
         });

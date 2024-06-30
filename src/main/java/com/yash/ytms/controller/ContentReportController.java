@@ -3,6 +3,7 @@ package com.yash.ytms.controller;
 import com.yash.ytms.domain.ContentReport;
 import com.yash.ytms.dto.ContentReportDto;
 import com.yash.ytms.dto.ContentReportedByLinkDto;
+import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.services.IServices.ContentReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,9 +33,22 @@ public class ContentReportController {
         return new ResponseEntity<>(savedReport, HttpStatus.CREATED);
     }
     @GetMapping("/get-all")
-    public  ResponseEntity getAllContentReport(){
+    public ResponseEntity<ResponseWrapperDto> getAllContentReport() {
         List<ContentReportDto> allContentReports = contentReportService.getAllReportContents();
-        return  new ResponseEntity(allContentReports,HttpStatus.OK);
+        ResponseWrapperDto wrapperDto = new ResponseWrapperDto();
+
+        if (allContentReports.isEmpty()) {
+            wrapperDto.setStatus("FAIL");
+            wrapperDto.setMessage("No content reports found!");
+            wrapperDto.setData(List.of()); // Return an empty list as data
+            return new ResponseEntity<>(wrapperDto, HttpStatus.OK);
+        }
+
+        wrapperDto.setStatus("SUCCESS");
+        wrapperDto.setMessage("Content reports found");
+        wrapperDto.setData(allContentReports);
+
+        return new ResponseEntity<>(wrapperDto, HttpStatus.OK);
     }
     @GetMapping("/getForLink")
     public ResponseEntity getContentReportbyLink(@RequestParam String link) {

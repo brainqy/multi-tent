@@ -104,14 +104,15 @@ public class ScheduleEventServiceImpl implements IScheduleEventService {
                             .map(se, ScheduleEventDto.class))
                     .toList();
         } else
-            throw new ApplicationException("No Events found !");
+            return List.of();
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public ResponseWrapperDto deleteScheduleEventById(Integer eventId, Principal principal) {
+        ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
         if (ObjectUtils.isNotEmpty(eventId)) {
-            ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
+
             Optional<ScheduleEvent> scheduleEventOptional = this.scheduleEventRepository.findById(eventId);
             if (scheduleEventOptional.isPresent()) {
                 ScheduleEvent scheduleEvent = scheduleEventOptional.get();
@@ -139,7 +140,9 @@ public class ScheduleEventServiceImpl implements IScheduleEventService {
             responseWrapperDto.setData(null);
             return responseWrapperDto;
         } else
-            throw new ApplicationException("Event id is null or empty, please check & try again !");
+            responseWrapperDto.setMessage("Event id is null or empty, please check & try again !");
+            return responseWrapperDto;
+            //throw new ApplicationException("Event id is null or empty, please check & try again !");
     }
 
     @Override

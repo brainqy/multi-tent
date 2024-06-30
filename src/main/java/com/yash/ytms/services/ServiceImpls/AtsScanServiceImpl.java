@@ -5,6 +5,7 @@ import com.yash.ytms.repository.AtsRepository;
 import com.yash.ytms.services.IServices.AtsScanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  * @since 15-04-2024
  */
 @Service
+@Qualifier("noGptScan")
 public class AtsScanServiceImpl implements AtsScanService {
     @Autowired
     private ModelMapper modelMapper;
@@ -62,9 +64,18 @@ List<SectionDataDto> data= new ArrayList<>();
 
     @Override
     public SectionDataWrapperDto getLatestReport(Principal principal) {
-        SectionDataWrapper latestReport= atsRepository.findFirstByOrderByCreatedAtDesc();
-        return modelMapper.map(latestReport,SectionDataWrapperDto.class);
+        Optional<SectionDataWrapper> latestReportOptional = Optional.ofNullable(atsRepository.findFirstByOrderByCreatedAtDesc());
 
+        if (latestReportOptional.isEmpty()) {
+            // Handle the case where no report is found, e.g., by returning a default DTO or throwing an exception
+            // For example, returning a default DTO:
+            SectionDataWrapperDto defaultDto = new SectionDataWrapperDto();
+            //defaultDto. setMessage("No report available"); // assuming SectionDataWrapperDto has a 'message' field
+            return defaultDto;
+        }
+
+        SectionDataWrapper latestReport = latestReportOptional.get();
+        return modelMapper.map(latestReport, SectionDataWrapperDto.class);
     }
 
     @Override

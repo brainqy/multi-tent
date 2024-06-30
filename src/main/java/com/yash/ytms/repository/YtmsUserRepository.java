@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Project Name - ytms-api
@@ -21,7 +22,7 @@ import java.util.List;
 public interface YtmsUserRepository extends JpaRepository<YtmsUser, Long> {
 
     @Query("select yur from YtmsUser yur where yur.emailAdd=?1")
-    YtmsUser getUserByEmail(String email);
+    Optional<YtmsUser> getUserByEmail(String email);
 
     @Query("select yur from YtmsUser yur where yur.accountStatus=com.yash.ytms.constants.UserAccountStatusTypes.PENDING")
     List<YtmsUser> getAllPendingUsers();

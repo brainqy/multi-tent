@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Project Name - ytms-api
  * <p>
@@ -40,12 +42,12 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        YtmsUser user = this
+        Optional<YtmsUser> user = this
                 .userRepository
                 .getUserByEmail(username);
 
         if (ObjectUtils.isNotEmpty(user)) {
-            return new CustomUserDetails(user);
+            return new CustomUserDetails(user.get());
         } else
             throw new ApplicationException("User Not Found with this username/email");
     }

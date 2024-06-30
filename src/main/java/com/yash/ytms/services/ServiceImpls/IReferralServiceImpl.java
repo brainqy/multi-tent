@@ -29,6 +29,8 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Description of the class or file.
@@ -57,19 +59,16 @@ public class IReferralServiceImpl implements IReferralService {
 
     @Override
     public void setReferralEntity(YtmsUserDto userDto) {
-        YtmsUser referrer = userRepository.getUserByEmail(userDto.getRef());
-        if (referrer != null) {
-            Referral referral = new Referral();
-            referral .setReferralCode(userDto.getRef().toLowerCase());
-            referral.setEmail(userDto.getEmailAdd());
-            if(referral.getReferralCode()!=null){
-                referral.setStatus("approved");
-            }else{
-                referral.setStatus("pending");
-            }
+        Optional<YtmsUser> optionalReferrer = userRepository.getUserByEmail(userDto.getRef());
 
+        optionalReferrer.ifPresent(referrer -> {
+            Referral referral = new Referral();
+            referral.setReferralCode(userDto.getRef().toLowerCase());
+            referral.setEmail(userDto.getEmailAdd());
+            referral.setStatus(referral.getReferralCode() != null ? "approved" : "pending");
             referral.setReferrer(referrer);
             referral.setReferredAt(LocalDateTime.now());
+
             referralRepository.save(referral);
 
             referrer.getReferrals().add(referral);
@@ -83,48 +82,57 @@ public class IReferralServiceImpl implements IReferralService {
                     .setAmount(COINS_PER_REFERRAL)
                     .setTransactionType(TransactionType.REFERRAL_BONUS)
                     .setCreatedDate(Date.from(Instant.now()));
+
             coinTransactionRepository.save(coinTransaction);
 
             referrer.setCoins(referrer.getCoins() + COINS_PER_REFERRAL);
             userRepository.save(referrer);
-        }
-
+        });
     }
 
     @Override
     public List<ReferralDto> findByReferrerId(YtmsUserDto userDto) {
-        YtmsUser user = modelMapper.map(userDto, YtmsUser.class);
-        List<Referral> referrals= referralRepository.findByReferrerId(user);
-        if (!referrals.isEmpty()) {
-            return referrals
-                    .stream()
-                    .map(se -> this
-                            .modelMapper
-                            .map(se, ReferralDto.class))
-                    .toList();
-        } else
-            throw new ApplicationException("No Referrals  found !");
+        Optional<YtmsUser> optionalUser = userRepository.getUserByEmail(userDto.getEmailAdd());
+
+        if (optionalUser.isEmpty()) {
+            System.out.println("User not found");
+            return List.of();
+        }
+
+        YtmsUser user = optionalUser.get();
+        List<Referral> referrals = referralRepository.findByReferrerId(user);
+
+        if (referrals.isEmpty()) {
+            System.out.println("No referrals found");
+            return List.of();
+        }
+
+        return referrals.stream()
+                .map(referral -> modelMapper.map(referral, ReferralDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseEntity sendEmailToReferral(String referralEmail) throws MessagingException {
-        ResponseWrapperDto wrapperDto= new ResponseWrapperDto();
-        YtmsUser userExists = userRepository.getUserByEmail(referralEmail);
-        if(userExists==null){
+    public ResponseEntity<ResponseWrapperDto> sendEmailToReferral(String referralEmail) throws MessagingException {
+        ResponseWrapperDto wrapperDto = new ResponseWrapperDto();
+        Optional<YtmsUser> userExists = userRepository.getUserByEmail(referralEmail);
+
+        if (userExists.isEmpty()) {
             emailUtil.pendingReferralEmail(referralEmail);
             wrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
             wrapperDto.setMessage("Email is sent to referral successfully");
-        } else{
+        } else {
             wrapperDto.setStatus(RequestStatusTypes.FAILED.toString());
             wrapperDto.setMessage("User already registered");
-
         }
-        return new ResponseEntity(wrapperDto,HttpStatus.OK);
+
+        return new ResponseEntity<>(wrapperDto, HttpStatus.OK);
     }
 
     @Override
     public String getMyReferralLink() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();String currentUser= auth.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser= auth.getName();
        String encodedEmail=  Base64.getEncoder().encodeToString(currentUser.getBytes());
 
        return encodedEmail;

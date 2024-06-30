@@ -2,6 +2,7 @@ package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.ContentReport;
 import com.yash.ytms.dto.ContentReportDto;
+import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ContentReportRepository;
@@ -39,18 +40,16 @@ public class ContentReportServiceImpl implements ContentReportService {
     @Override
     public List<ContentReportDto> getAllReportContents() {
         List<ContentReport> contentReports = contentReportRepository.findAll();
-        if (!contentReports.isEmpty()) {
-            return contentReports
-                    .stream()
-                    .map(se -> this
-                            .modelMapper
-                            .map(se, ContentReportDto.class))
-                    .toList();
-        } else
-            throw new ApplicationException("No Content reports  found !");
 
+        if (contentReports.isEmpty()) {
+            System.out.println("No Content reports found !");
+            return List.of(); // Return an empty list if no content reports are found
+        }
+
+        return contentReports.stream()
+                .map(report -> modelMapper.map(report, ContentReportDto.class))
+                .collect(Collectors.toList());
     }
-
     @Override
     public ContentReportDto saveReportContent(ContentReportDto contentReportDto) {
         ContentReport contentRepport = modelMapper.map(contentReportDto, ContentReport.class);

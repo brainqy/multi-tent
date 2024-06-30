@@ -69,7 +69,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         // Save the organization first
         Organization organization = modelMapper.map(defaultOrg,Organization.class);
 
-        YtmsUser user = null;
+        Optional<YtmsUser> user = null;
         if (ObjectUtils.isNotEmpty(userDto)) {
             user = userRepository.getUserByEmail(userDto.getEmailAdd());
             if (ObjectUtils.isEmpty(user)) {
@@ -83,14 +83,14 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
                     userDto.setUserRole(userRoleDto);
                     referralService.setReferralEntity(userDto);
 
-                    user = modelMapper.map(userDto, YtmsUser.class);
-                    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-                    user.setAccountStatus(UserAccountStatusTypes.PENDING);
+                    user = Optional.ofNullable(modelMapper.map(userDto, YtmsUser.class));
+                    user.get().setPassword(passwordEncoder.encode(userDto.getPassword()));
+                    user.get().setAccountStatus(UserAccountStatusTypes.PENDING);
 
                     // Associate the saved organization with the user
-                    user.setOrganization(organization);
+                    user.get().setOrganization(organization);
 
-                    user = userRepository.save(user);
+                    user = Optional.of(userRepository.save(user.get()));
                     userDto = modelMapper.map(user, YtmsUserDto.class);
                 } else {
                     throw new ApplicationException("Password did not matched, please try again");
@@ -108,7 +108,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     @Override
     public YtmsUserDto getUserByEmailAdd(String emailAdd) {
         YtmsUserDto userDto = null;
-        YtmsUser user = null;
+        Optional<YtmsUser> user = null;
 
         if (StringUtils.isNotEmpty(emailAdd)) {
             user = this.userRepository.getUserByEmail(emailAdd);
@@ -159,7 +159,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
         if (StringUtils.isNotEmpty(email)) {
             try {
-                YtmsUser ytmsUser = this.userRepository.getUserByEmail(email);
+                Optional<YtmsUser> ytmsUser = this.userRepository.getUserByEmail(email);
                 if (ObjectUtils.isNotEmpty(ytmsUser)) {
                     emailUtil.sendSetPasswordEmail(email);
                     responseWrapperDto.setMessage("please check your email to reset password");
@@ -187,11 +187,11 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         String email = map.get("email");
         String password = map.get("password");
         String newEmail = new String(Base64.getDecoder().decode(email));
-        YtmsUser user = this.userRepository.getUserByEmail(newEmail);
+        Optional<YtmsUser> user = this.userRepository.getUserByEmail(newEmail);
         if (user != null && StringUtils.isNotEmpty(password)) {
-            user.setPassword(this.passwordEncoder.encode(password));
+            user.get().setPassword(this.passwordEncoder.encode(password));
             System.out.println(" changing password for " + user.toString());
-            this.userRepository.save(user);
+            this.userRepository.save(user.get());
             return true;
         }
         return false;
@@ -207,12 +207,12 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         CustomUserDetails auth = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
         String email = auth.getEmailAdd();
 
-        YtmsUser user = this.userRepository.getUserByEmail(email);
+        Optional<YtmsUser> user = this.userRepository.getUserByEmail(email);
 
         if (user != null && StringUtils.isNotEmpty(password) && StringUtils.isNotEmpty(oldPassword)) {
-            if (passwordEncoder.matches(oldPassword, user.getPassword())) {
-                user.setPassword(passwordEncoder.encode(password));
-                this.userRepository.save(user);
+            if (passwordEncoder.matches(oldPassword, user.get().getPassword())) {
+                user.get().setPassword(passwordEncoder.encode(password));
+                this.userRepository.save(user.get());
                 responseWrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
                 System.out.println("Password changed successfully.");
             } else {
@@ -242,15 +242,15 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
 
     @Override
     public String SetLoginHistory(String currentUserEmail) {
-        YtmsUser currentUser = userRepository.getUserByEmail(currentUserEmail);
+        Optional<YtmsUser> currentUser = userRepository.getUserByEmail(currentUserEmail);
         // create new login history
         if (currentUser != null) {
             LoginHistory loginHistory = new LoginHistory();
             loginHistory.setLoginTime(LocalDateTime.now().minusDays(0));
-            loginHistory.setUserHistory(currentUser);
+            loginHistory.setUserHistory(currentUser.get());
             //currentUser.setLastLogin(Instant.now());
-            currentUser.addLoginHistory(loginHistory);
-            userRepository.save(currentUser);
+            currentUser.get().addLoginHistory(loginHistory);
+            userRepository.save(currentUser.get());
             return  "LoginHistory Success ";
         }
 

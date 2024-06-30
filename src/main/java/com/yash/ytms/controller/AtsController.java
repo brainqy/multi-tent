@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 public class AtsController {
     @Autowired
-    @Qualifier("gptScan")
+    @Qualifier("noGptScan")
     private AtsScanService scanService;
     @PostMapping("/generate-report")
     public ResponseEntity<SectionDataWrapperDto> generateReport(@RequestBody GenerateReportRequest request, Principal principal) {
