@@ -26,12 +26,12 @@ import java.util.List;
 @Table(name = "ytms_user")
 public class YtmsUser {
 
-    @Column(name = "full_name")
-    private String fullName;
-
     @Id
     @Column(name = "email_add")
     private String emailAdd;
+
+    @Column(name = "full_name")
+    private String fullName;
 
     @Column(name = "password")
     private String password;
@@ -43,7 +43,7 @@ public class YtmsUser {
     @Column(name = "account_status")
     private UserAccountStatusTypes accountStatus;
 
-    private Integer coins=0;
+    private Integer coins = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id")
@@ -52,6 +52,7 @@ public class YtmsUser {
     @ManyToOne
     @JoinColumn(name = "user_role")
     private UserRole userRole;
+
     @OneToMany(mappedBy = "userHistory", cascade = CascadeType.ALL)
     private List<LoginHistory> loginHistoryList = new ArrayList<>();
 
@@ -59,7 +60,7 @@ public class YtmsUser {
         loginHistoryList.add(loginHistory);
         loginHistory.setUserHistory(this);
     }
+
     @OneToMany(mappedBy = "referrer", cascade = CascadeType.ALL)
     private List<Referral> referrals = new ArrayList<>();
-
 }

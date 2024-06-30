@@ -40,13 +40,11 @@ public class IOrganizationServiceImpl implements IOrganizationService {
         return organizationRepository.save(organization);
     }
 
+
     @Override
-    public OrganizationDto getDefaultOrganization() {
-        OrganizationDto orgDto= new OrganizationDto();
-        orgDto.setId(1l);
-        orgDto.setOrgUsername("BRAINQY");
-        orgDto.setOrgName("BRAINQY Solutions");
-        orgDto.setOrgCode("BRAINQY");
+    public OrganizationDto findOrganizationByOrgCode(String orgCode) {
+        Organization org = organizationRepository.findOrganizationByOrgCode(orgCode);
+        OrganizationDto orgDto = mapper.map(org, OrganizationDto.class);
         return orgDto;
     }
 }

@@ -13,5 +13,5 @@ import com.yash.ytms.dto.OrganizationDto;
  */
 public interface IOrganizationService {
     public Organization createOrganization(OrganizationDto organizationDto);
-    public OrganizationDto  getDefaultOrganization();
+    public OrganizationDto findOrganizationByOrgCode(String orgCode);
 }

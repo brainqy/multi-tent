@@ -65,7 +65,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     @Override
     @Transactional
     public YtmsUserDto createNewUser(YtmsUserDto userDto) {
-        OrganizationDto defaultOrg =this.organizationService.getDefaultOrganization();
+        OrganizationDto defaultOrg =this.organizationService.findOrganizationByOrgCode("BRAINQY");
         // Save the organization first
         Organization organization = modelMapper.map(defaultOrg,Organization.class);
 

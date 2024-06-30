@@ -32,7 +32,7 @@ public class YtmsUserDto {
     private String ref;
     private String refto;
     private List<ReferralDto> referrals;
-
+    private Long organizationId;
     private UserRoleDto userRole;
 
     @JsonIgnore

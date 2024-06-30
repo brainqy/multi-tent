@@ -23,19 +23,20 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Organization {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     private String orgName;
+
     @NotNull
     private String orgUsername;
+
     @Column(unique = true)
     private String orgCode;
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<YtmsUser> users = new HashSet<>();
-
     // Constructors, getters, and setters
 }
