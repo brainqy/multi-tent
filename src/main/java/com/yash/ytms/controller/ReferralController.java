@@ -36,6 +36,8 @@ public class ReferralController {
     IReferralService referralService;
     @Value("${server.port}")
     String port;
+    @Value("${baseUrl}")
+    String baseUrl;
 
 
 @PostMapping("/resendEmail")
@@ -53,7 +55,7 @@ public class ReferralController {
         YtmsUserDto userDto = userService.getUserByEmailAdd(userEmail);
 
         // Generate referral link
-        String referralLink = "http://localhost:8083/register?ref=" + userDto.getEmailAdd();
+        String referralLink = baseUrl+"/register?ref=" + userDto.getEmailAdd();
 
         // Retrieve user's referrals
         List<ReferralDto> myReferrals = referralService.findByReferrerId(userDto);
@@ -70,7 +72,7 @@ public class ReferralController {
     @GetMapping("/getReferralLink")
     public ResponseEntity getMyReferralLink(){
     String enCodedEmail=  referralService.getMyReferralLink();
-        String referralLink = "http://localhost:"+port+"/register?ref="+enCodedEmail;
+        String referralLink = baseUrl+"/register?ref="+enCodedEmail;
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(new JsonPrimitive(referralLink));
 
