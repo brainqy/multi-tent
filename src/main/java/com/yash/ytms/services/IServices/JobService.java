@@ -10,6 +10,7 @@ package com.yash.ytms.services.IServices;
  */
 
 import com.yash.ytms.domain.Job;
+import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,30 +18,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class JobService {
 
-    @Autowired
-    private JobRepository jobRepository;
+public interface JobService {
+    public ResponseWrapperDto save(Job job);
+    public List<Job>  findAll();
+    public Job findById(Long id);
+    public ResponseWrapperDto deleteById(Long id);
+    public List<Job> findByStatus(String status);
 
-    public List<Job> findAll() {
-        return jobRepository.findAll();
-    }
 
-    public Optional<Job> findById(Long id) {
-        return jobRepository.findById(id);
-    }
-
-    public Job save(Job job) {
-        return jobRepository.save(job);
-    }
-
-    public void deleteById(Long id) {
-        jobRepository.deleteById(id);
-    }
-
-    public List<Job> findByStatus(String status) {
-        return jobRepository.findAllByStatus(status);
-    }
 }
 
