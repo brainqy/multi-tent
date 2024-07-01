@@ -35,21 +35,23 @@ public class CoinTransaction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
-    private TransactionType transactionType = TransactionType.REFERRAL;
+    private TransactionType transactionType;
 
     @Column(name = "amount", nullable = false)
     private Integer amount;
 
-    @Column(name = "source")
-    private String source;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "source_type", nullable = false)
+    private SourceType sourceType;
 
     @Column(name = "created_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate = new Date();
 
-    public CoinTransaction(YtmsUser user, TransactionType transactionType, Integer amount) {
+    public CoinTransaction(YtmsUser user, TransactionType transactionType, Integer amount,SourceType sourceType) {
         this.user = user;
         this.transactionType = transactionType;
         this.amount = amount;
+        this.sourceType=sourceType;
     }
 }

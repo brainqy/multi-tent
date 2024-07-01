@@ -1,7 +1,9 @@
 package com.yash.ytms.services.IServices;
 
 import com.yash.ytms.domain.InterviewSlot;
+import com.yash.ytms.dto.InterviewPageDto;
 import com.yash.ytms.dto.InterviewSlotDto;
+import com.yash.ytms.dto.ResponseWrapperDto;
 
 import java.security.Principal;
 import java.util.List;
@@ -15,8 +17,8 @@ import java.util.List;
  * @since 10-04-2024
  */
 public interface InterviewSlotService {
-    InterviewSlotDto saveInterviewSlot(InterviewSlotDto interviewSlot, Principal principal);
-    List<InterviewSlotDto> getAllInterviewSlots();
+    ResponseWrapperDto saveInterviewSlot(InterviewSlotDto interviewSlot, Principal principal);
+    InterviewPageDto getAllInterviewSlots();
     InterviewSlotDto updateInterviewSlot(Long id ,InterviewSlotDto interviewSlotDto);
-    InterviewSlotDto cancelInterviewSlot(Long id);
+    InterviewSlotDto cancelInterviewSlot(Long id,Principal principal);
 }

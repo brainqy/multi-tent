@@ -21,4 +21,9 @@ public class GlobalExceptionHandler {
         String message = applicationException.getMessage();
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(JwtTokenExpiredException.class)
+    public ResponseEntity<String> handleApplicationException(JwtTokenExpiredException jwtTokenExpiredException) {
+        String message = jwtTokenExpiredException.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

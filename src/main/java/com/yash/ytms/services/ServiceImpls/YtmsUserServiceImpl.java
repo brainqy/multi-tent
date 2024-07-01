@@ -228,16 +228,23 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
-    public List<YtmsUserDto> getAllTrainers() {
-        Optional<List<YtmsUser>> optionalAllTrainers = Optional.ofNullable(this.userRepository.findAllTrainers());
+    public ResponseWrapperDto getAllTrainers() {
+        List<YtmsUser> allTrainers = this.userRepository.findAllTrainers();
+        List<YtmsUserDto> trainersDtoList = allTrainers != null && !allTrainers.isEmpty()
+                ? allTrainers.stream()
+                .map(yur -> this.modelMapper.map(yur, YtmsUserDto.class))
+                .collect(Collectors.toList())
+                : Collections.emptyList();
 
-        return optionalAllTrainers
-                .filter(allTrainers -> !allTrainers.isEmpty())
-                .map(allTrainers -> allTrainers.stream()
-                        .map(yur -> this.modelMapper.map(yur, YtmsUserDto.class))
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new ApplicationException("No Trainers found!"));
+        ResponseWrapperDto wrapperDto = new ResponseWrapperDto();
+        wrapperDto.setData(trainersDtoList);
+        wrapperDto.setStatus("SUCCESS");
+        wrapperDto.setMessage(trainersDtoList.isEmpty() ? "No trainers found" : "Trainers fetched successfully");
+
+        return wrapperDto;
     }
+
+
 
 
     @Override

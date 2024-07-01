@@ -5,10 +5,9 @@ package com.yash.ytms.domain;
  *
  * @author Dnyaneshwar Somwanshi
  * @version 1.0
- * @project ytms-api
- * @since 12-02-2024
+ * @project multi-tent
+ * @since 01-07-2024
  */
 public enum TransactionType {
-    REFERRAL,
-    TASK_COMPLETION, REFERRAL_BONUS
+    DEBIT,CREDIT
 }

@@ -33,7 +33,7 @@ public interface IYtmsUserService {
 
     ResponseWrapperDto changePassword(Map<String, String> map);
 
-    List<YtmsUserDto> getAllTrainers();
+    ResponseWrapperDto getAllTrainers();
     String SetLoginHistory(String email);
     ProfileCompletionDto getProfileCompletion(YtmsUserDto userDto);
 }

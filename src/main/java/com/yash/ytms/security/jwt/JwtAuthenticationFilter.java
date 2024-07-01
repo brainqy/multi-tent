@@ -1,6 +1,7 @@
 package com.yash.ytms.security.jwt;
 
 import com.yash.ytms.exception.ApplicationException;
+import com.yash.ytms.exception.JwtTokenExpiredException;
 import com.yash.ytms.security.userdetails.CustomUserDetails;
 import com.yash.ytms.security.userdetails.CustomUserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -61,8 +62,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     LOGGER.error("Unable to get Jwt Token !!",
                             new ApplicationException("Unable to get Jwt Token !!"));
                 } catch (ExpiredJwtException e) {
+
                     LOGGER.error("Jwt Token has expired !!",
-                            new ApplicationException("Jwt Token has expired !!"));
+                            new JwtTokenExpiredException("Jwt Token has expired !!"));
                 } catch (MalformedJwtException e) {
                     LOGGER.error("Invalid Jwt !!",
                             new ApplicationException("Invalid Jwt !!"));

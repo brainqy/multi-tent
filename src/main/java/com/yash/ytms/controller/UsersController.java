@@ -65,8 +65,8 @@ public class UsersController {
     }
 
     @GetMapping("/get/all-trainers")
-    public ResponseEntity<List<YtmsUserDto>> getAllTrainers() {
-        List<YtmsUserDto> allTrainers = this.userService.getAllTrainers();
+    public ResponseEntity<ResponseWrapperDto> getAllTrainers() {
+        ResponseWrapperDto allTrainers = this.userService.getAllTrainers();
         return new ResponseEntity<>(allTrainers, HttpStatus.OK);
     }
 }

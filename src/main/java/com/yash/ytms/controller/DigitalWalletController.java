@@ -2,10 +2,12 @@ package com.yash.ytms.controller;
 
 import com.yash.ytms.domain.CoinTransaction;
 import com.yash.ytms.dto.CoinTransactionDto;
+import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.services.IServices.ICoinTransactionsService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +34,8 @@ public class DigitalWalletController {
     @GetMapping("/wallet")
     public ResponseEntity<?> getWallet(Authentication authentication) {
         YtmsUserDto userDto = userService.getUserByEmailAdd(authentication.getName());
-        List<CoinTransactionDto> transactions = coinTransactionsService.findTransactionsByUser(userDto.getEmailAdd());
+        ResponseWrapperDto transactions = coinTransactionsService.findTransactionsByUser(userDto.getEmailAdd());
 
-        return ResponseEntity.ok(transactions);
+        return  new ResponseEntity(transactions, HttpStatus.OK);
     }
 }

@@ -1,14 +1,10 @@
 package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.constants.RequestStatusTypes;
-import com.yash.ytms.domain.CoinTransaction;
-import com.yash.ytms.domain.Referral;
-import com.yash.ytms.domain.TransactionType;
-import com.yash.ytms.domain.YtmsUser;
+import com.yash.ytms.domain.*;
 import com.yash.ytms.dto.ReferralDto;
 import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.dto.YtmsUserDto;
-import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.CoinTransactionRepository;
 import com.yash.ytms.repository.ReferralRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
@@ -23,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Base64;
@@ -80,7 +75,8 @@ public class IReferralServiceImpl implements IReferralService {
             CoinTransaction coinTransaction = new CoinTransaction()
                     .setUser(referrer)
                     .setAmount(COINS_PER_REFERRAL)
-                    .setTransactionType(TransactionType.REFERRAL_BONUS)
+                    .setSourceType(SourceType.REFERRAL_BONUS)
+                    .setTransactionType(TransactionType.CREDIT)
                     .setCreatedDate(Date.from(Instant.now()));
 
             coinTransactionRepository.save(coinTransaction);

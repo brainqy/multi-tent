@@ -1,5 +1,6 @@
 package com.yash.ytms.dto;
 
+import com.yash.ytms.domain.SourceType;
 import com.yash.ytms.domain.TransactionType;
 import com.yash.ytms.domain.YtmsUser;
 import jakarta.persistence.*;
@@ -22,9 +23,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class CoinTransactionDto {
 
+    private int id;
     private YtmsUserDto user;
     private TransactionType transactionType;
     private Integer amount;
-    private String source;
+    private SourceType sourceType;
     private Date createdDate ;
 }

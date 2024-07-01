@@ -3,6 +3,7 @@ package com.yash.ytms.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
 import com.yash.ytms.dto.CoinTransactionDto;
+import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.services.IServices.ICoinTransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,9 @@ public class CoinTransactionsConttroller {
     @Autowired
     private ICoinTransactionsService coinTransactionsService;
     @GetMapping("/getTransactions")
-    public ResponseEntity<List<CoinTransactionDto>> getCoinTransactions(Authentication authentication){
+    public ResponseEntity<ResponseWrapperDto> getCoinTransactions(Authentication authentication){
         String currentUserEmail= authentication.getName();
-        List<CoinTransactionDto> transations = coinTransactionsService.findTransactionsByUser(currentUserEmail);
+        ResponseWrapperDto transations = coinTransactionsService.findTransactionsByUser(currentUserEmail);
 
         return  new ResponseEntity<>(transations, HttpStatus.OK);
     }
