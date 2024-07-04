@@ -1,5 +1,6 @@
 package com.yash.ytms.domain.atsscan;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,5 +32,6 @@ public class SectionDataWrapper {
     private double finalProgress;
     private String jobTitle;
     private LocalDateTime createdAt;
+    @NotNull
     private  String createdBy;
 }

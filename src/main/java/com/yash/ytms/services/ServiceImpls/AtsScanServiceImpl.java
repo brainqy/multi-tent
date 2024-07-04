@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,8 +57,12 @@ List<SectionDataDto> data= new ArrayList<>();
         wrapper.setAllData(data);
         wrapper.setFinalProgress(finalProgress);
         LocalDateTime localDateTime= LocalDateTime.now();
-        wrapper.setCreatedAt(localDateTime.toString());
+
+        String name= principal.getName();
         SectionDataWrapper wrapperEntity = modelMapper.map(wrapper, SectionDataWrapper.class);
+        wrapperEntity.setCreatedBy(name);
+        wrapperEntity.setJobTitle("Default Job Title");
+        wrapperEntity.setCreatedAt(LocalDateTime.now());
         atsRepository.save(wrapperEntity);
         return wrapper;
     }
