@@ -27,4 +27,5 @@ public class JwtAuthResponse {
     private String message;
 
     private DailyStreakDto dailyStreakDto;
+
 }

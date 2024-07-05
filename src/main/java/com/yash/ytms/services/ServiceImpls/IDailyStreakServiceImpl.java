@@ -51,7 +51,7 @@ public class IDailyStreakServiceImpl implements IDailyStreakService {
         boolean yesterdayLogin = distinctDates.contains(yesterday);
 
         if (distinctDates.contains(today)) {
-            streak = 1;
+            streak = 0;
             for (int i = 0; i <= distinctDates.size(); i++) {
                 if (distinctDates.contains(today.minusDays(i))) {
                     streak++;
@@ -65,6 +65,6 @@ public class IDailyStreakServiceImpl implements IDailyStreakService {
         Collections.sort(consequentDays);
         int streakNumber = yesterdayLogin ? streak : 0;
 
-        return new DailyStreakDto().setConsequentDays(consequentDays).setStreakNumber(streakNumber);
+        return new DailyStreakDto().setConsequentDays(consequentDays).setStreakNumber(streakNumber).setUserBalance(currentUser.getCoins());
     }
 }

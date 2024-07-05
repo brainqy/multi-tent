@@ -32,5 +32,6 @@ public class DailyStreakDto {
 
     private List<LocalDate> consequentDays;
     private int streakNumber;
+    private int userBalance;
 
 }
