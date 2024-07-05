@@ -20,9 +20,14 @@ import java.util.List;
 @NoArgsConstructor
 
 public class SectionDataWrapperDto {
+    private int wrapper_id;
      private List<SectionDataDto> allData;
     private double finalProgress;
     private String jobTitle;
+    private String resume;
+    private String jobDescription;
     private String createdAt;
     private  String createdBy;
+    private boolean isArchived;
+    private  boolean isStarred;
 }

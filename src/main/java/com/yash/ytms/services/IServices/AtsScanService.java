@@ -19,4 +19,6 @@ public interface AtsScanService {
     public  SectionDataWrapperDto getLatestReport(Principal principal);
 
     List<SectionDataWrapperDto> getScanHistoryByUser(Principal principal);
+
+    SectionDataWrapperDto saveAsStarred(Long id);
 }

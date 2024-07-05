@@ -31,6 +31,10 @@ public class SectionDataWrapper {
     private List<SectionData> allData;
     private double finalProgress;
     private String jobTitle;
+    private String resume;
+    private String jobDescription;
+    private boolean isArchived;
+    private  boolean isStarred;
     private LocalDateTime createdAt;
     @NotNull
     private  String createdBy;

@@ -156,4 +156,9 @@ public class AtsScanGptServiceImpl implements AtsScanService {
                 .collect(Collectors.toList());
         return scanHistoryDto;
     }
+
+    @Override
+    public SectionDataWrapperDto saveAsStarred(Long id) {
+        return null;
+    }
 }

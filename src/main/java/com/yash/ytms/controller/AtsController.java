@@ -1,16 +1,15 @@
 package com.yash.ytms.controller;
 
 import com.yash.ytms.domain.atsscan.GenerateReportRequest;
+import com.yash.ytms.domain.atsscan.SectionDataWrapper;
 import com.yash.ytms.domain.atsscan.SectionDataWrapperDto;
+import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.services.IServices.AtsScanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -44,7 +43,17 @@ public class AtsController {
     @GetMapping("/get-scan-history")
 
     public ResponseEntity getListOfReportsyUser(Principal principal){
+
         List<SectionDataWrapperDto> scanHistory= this.scanService.getScanHistoryByUser(principal);
+
         return  new ResponseEntity<>(scanHistory,HttpStatus.OK);
+    }
+    @PutMapping("/{id}/star")
+    public ResponseEntity<SectionDataWrapperDto> saveAsStarred(@PathVariable Long id) {
+        SectionDataWrapperDto updatedEntity = this.scanService.saveAsStarred(id);
+        ResponseWrapperDto wrapperDto= new ResponseWrapperDto();
+        wrapperDto.setStatus("SUCCESS");
+        wrapperDto.setData(updatedEntity);
+        return new ResponseEntity(wrapperDto,HttpStatus.OK);
     }
 }

@@ -3,13 +3,13 @@ package com.yash.ytms.services.ServiceImpls;
 import com.yash.ytms.domain.atsscan.*;
 import com.yash.ytms.repository.AtsRepository;
 import com.yash.ytms.services.IServices.AtsScanService;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -95,6 +95,20 @@ List<SectionDataDto> data= new ArrayList<>();
                 .orElse(Collections.emptyList());
 
         return scanHistoryDto;
+    }
+
+    @Override
+    public SectionDataWrapperDto saveAsStarred(Long id) {
+        Optional<SectionDataWrapper> optionalEntity = atsRepository.findById(id);
+        if (optionalEntity.isPresent()) {
+            SectionDataWrapper entity = optionalEntity.get();
+            entity.setStarred(true);
+            atsRepository.save(entity);
+            SectionDataWrapperDto entityDto = modelMapper.map(entity, SectionDataWrapperDto.class);
+       return entityDto;
+        }
+        throw new EntityNotFoundException("SectionDataWrapperDto not found with id: " + id);
+
     }
 
 
