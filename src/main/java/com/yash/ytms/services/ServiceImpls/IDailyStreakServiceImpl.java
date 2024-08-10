@@ -63,7 +63,7 @@ public class IDailyStreakServiceImpl implements IDailyStreakService {
         }
 
         Collections.sort(consequentDays);
-        int streakNumber = yesterdayLogin ? streak : 0;
+        int streakNumber = yesterdayLogin ? streak : 1;
 
         return new DailyStreakDto().setConsequentDays(consequentDays).setStreakNumber(streakNumber).setUserBalance(currentUser.getCoins());
     }
