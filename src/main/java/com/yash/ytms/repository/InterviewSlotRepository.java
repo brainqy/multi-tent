@@ -1,8 +1,13 @@
 package com.yash.ytms.repository;
 
 import com.yash.ytms.domain.InterviewSlot;
+import com.yash.ytms.domain.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Description of the class or file.
@@ -14,4 +19,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface InterviewSlotRepository extends JpaRepository<InterviewSlot, Long> {
+    @Query("SELECT r FROM InterviewSlot r WHERE r.job = :job and r.scheduleUser.emailAdd=:userEmail")
+    List<InterviewSlot> getAllInterviewsyJobId(@Param("job")Job job,@Param("userEmail") String userEmail);
 }

@@ -8,6 +8,7 @@ import com.yash.ytms.repository.InterviewSlotRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import com.yash.ytms.services.IServices.InterviewSlotService;
+import com.yash.ytms.services.IServices.JobService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -44,6 +45,8 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
     private IYtmsUserService userService;
     @Autowired
     private CoinTransactionRepository transactionRepository;
+    @Autowired
+    private JobService jobService;
 
 
     @Override
@@ -51,30 +54,43 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
         ResponseWrapperDto wrapperDto= new ResponseWrapperDto();
         final String userName = principal.getName();
         Optional<YtmsUserDto> userDto = Optional.ofNullable(this.userService.getUserByEmailAdd(userName));
+         Optional<Job> jobOptional = Optional.ofNullable(this.jobService.findById(interviewSlotDto.getJobId()));
         YtmsUser ytmsUser = modelMapper.map(userDto, YtmsUser.class);
-        int remainingCoinBalance = ytmsUser.getCoins() - INTERVIEW_CHARGE;
-        if (remainingCoinBalance>0){
+        if(!interviewSlotDto.getHrName().isEmpty()){
             InterviewSlot interviewSlot =modelMapper.map(interviewSlotDto,InterviewSlot.class);
+            interviewSlot.setJob(jobOptional.get());
             interviewSlot.setScheduleUser(ytmsUser);
             interviewSlotRepository.save(interviewSlot);
-            //coin transaction
-            ytmsUser.setCoins(remainingCoinBalance);
-            CoinTransactionDto transactionDto= new CoinTransactionDto();
-            transactionDto.setSourceType(SourceType.INTERVIEW);
-            transactionDto.setTransactionType(TransactionType.DEBIT);
-            transactionDto.setAmount(25);
-            transactionDto.setUser(userDto.get());
-            transactionDto.setCreatedDate(Date.from(Instant.now()));
-            userRepository.save(ytmsUser);
-            CoinTransaction transactionData=modelMapper.map(transactionDto, CoinTransaction.class);
-            transactionRepository.save(transactionData);
             wrapperDto.setMessage("Interview Slot Successfully Created");
             wrapperDto.setStatus("SUCCESS");
             wrapperDto.setData(interviewSlotDto);
-        }else {
-            wrapperDto.setStatus("COin Balance is not enough for Interview slot creation");
-            wrapperDto.setStatus("FAILED");
         }
+        if(interviewSlotDto.getHrName().isEmpty()){
+            int remainingCoinBalance = ytmsUser.getCoins() - INTERVIEW_CHARGE;
+            if (remainingCoinBalance>0){
+                InterviewSlot interviewSlot =modelMapper.map(interviewSlotDto,InterviewSlot.class);
+                interviewSlot.setScheduleUser(ytmsUser);
+                interviewSlotRepository.save(interviewSlot);
+                //coin transaction
+                ytmsUser.setCoins(remainingCoinBalance);
+                CoinTransactionDto transactionDto= new CoinTransactionDto();
+                transactionDto.setSourceType(SourceType.INTERVIEW);
+                transactionDto.setTransactionType(TransactionType.DEBIT);
+                transactionDto.setAmount(25);
+                transactionDto.setUser(userDto.get());
+                transactionDto.setCreatedDate(Date.from(Instant.now()));
+                userRepository.save(ytmsUser);
+                CoinTransaction transactionData=modelMapper.map(transactionDto, CoinTransaction.class);
+                transactionRepository.save(transactionData);
+                wrapperDto.setMessage("Interview Slot Successfully Created");
+                wrapperDto.setStatus("SUCCESS");
+                wrapperDto.setData(interviewSlotDto);
+            }else {
+                wrapperDto.setStatus("COin Balance is not enough for Interview slot creation");
+                wrapperDto.setStatus("FAILED");
+            }
+        }
+
 
         return  wrapperDto;
     }
@@ -142,5 +158,19 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
         transactionDto.setCreatedDate(Date.from(Instant.now()));
         transactionRepository.save(modelMapper.map(transactionDto, CoinTransaction.class));
         return modelMapper.map(updatedSlot, InterviewSlotDto.class);
+    }
+
+    @Override
+    public List<InterviewSlotDto> getAllInterviewSlotsByJobId(long jobId, Principal principal) {
+        ResponseWrapperDto wrapperDto= new ResponseWrapperDto();
+        final String userName = principal.getName();
+        Optional<YtmsUserDto> userDto = Optional.ofNullable(this.userService.getUserByEmailAdd(userName));
+        Optional<Job> jobOptional = Optional.ofNullable(this.jobService.findById(jobId));
+        List<InterviewSlot> interviewSlots= interviewSlotRepository.getAllInterviewsyJobId(jobOptional.get(),userDto.get().getEmailAdd());
+        List<InterviewSlotDto> slotDtos = interviewSlots.stream()
+                .map(slot -> modelMapper.map(slot, InterviewSlotDto.class))
+                .collect(Collectors.toList());
+        return  slotDtos;
+
     }
 }

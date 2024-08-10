@@ -36,6 +36,14 @@ public class InterviewSlot {
     @ManyToOne
     @JoinColumn(name = "createdBy")
     private YtmsUser scheduleUser;
+    private String meetingLink;
+    private String hrName;
+    private String mobileNumber;
+    private  String description;
+    private String hrEmail;
+    @ManyToOne
+    @JoinColumn(name = "createdFor")
+    private  Job job;
 
     // Getters and setters
 }

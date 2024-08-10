@@ -1,5 +1,6 @@
 package com.yash.ytms.dto;
 
+import com.yash.ytms.domain.Job;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,4 +26,10 @@ public class InterviewSlotDto {
     private String interviewType;
     private String kindOfInterviewType;
     private String status;
+    private String meetingLink;
+    private String hrName;
+    private String mobileNumber;
+    private  String description;
+    private String hrEmail;
+    private long jobId;
 }

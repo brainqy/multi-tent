@@ -21,4 +21,6 @@ public interface InterviewSlotService {
     InterviewPageDto getAllInterviewSlots();
     InterviewSlotDto updateInterviewSlot(Long id ,InterviewSlotDto interviewSlotDto);
     InterviewSlotDto cancelInterviewSlot(Long id,Principal principal);
+
+    List<InterviewSlotDto> getAllInterviewSlotsByJobId(long jobId, Principal principal);
 }

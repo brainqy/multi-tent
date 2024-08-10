@@ -43,6 +43,16 @@ public class InterviewSlotController {
         return  new ResponseEntity(responseWrapperDto, HttpStatus.OK);
 
     }
+    @GetMapping("/jobId/{jobId}")
+    public  ResponseEntity getAllInterviewSlots( @PathVariable long jobId, Principal principal) {
+        ResponseWrapperDto responseWrapperDto= new ResponseWrapperDto();
+        List<InterviewSlotDto> allInterviewSlots = interviewSlotService.getAllInterviewSlotsByJobId(jobId,principal);
+        responseWrapperDto.setData(allInterviewSlots);
+        responseWrapperDto.setStatus("SUCCESS");
+        responseWrapperDto.setMessage("Data retrieved successfully");
+        return  new ResponseEntity(responseWrapperDto, HttpStatus.OK);
+
+    }
     @PutMapping("/{id}")
     public ResponseEntity<InterviewSlotDto> updateInterviewSlot(@PathVariable Long id, @RequestBody InterviewSlotDto updatedSlotDto) {
         InterviewSlotDto updatedSlot = interviewSlotService.updateInterviewSlot(id, updatedSlotDto);
