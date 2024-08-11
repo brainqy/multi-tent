@@ -54,9 +54,10 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
         ResponseWrapperDto wrapperDto= new ResponseWrapperDto();
         final String userName = principal.getName();
         Optional<YtmsUserDto> userDto = Optional.ofNullable(this.userService.getUserByEmailAdd(userName));
-         Optional<Job> jobOptional = Optional.ofNullable(this.jobService.findById(interviewSlotDto.getJobId()));
-        YtmsUser ytmsUser = modelMapper.map(userDto, YtmsUser.class);
-        if(!interviewSlotDto.getHrName().isEmpty()){
+             YtmsUser ytmsUser = modelMapper.map(userDto, YtmsUser.class);
+        if (interviewSlotDto.getHrName() != null) {
+
+            Optional<Job> jobOptional = Optional.ofNullable(this.jobService.findById(interviewSlotDto.getJobId()));
             InterviewSlot interviewSlot =modelMapper.map(interviewSlotDto,InterviewSlot.class);
             interviewSlot.setJob(jobOptional.get());
             interviewSlot.setScheduleUser(ytmsUser);
@@ -65,7 +66,7 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
             wrapperDto.setStatus("SUCCESS");
             wrapperDto.setData(interviewSlotDto);
         }
-        if(interviewSlotDto.getHrName().isEmpty()){
+        if(interviewSlotDto.getHrName()==null){
             int remainingCoinBalance = ytmsUser.getCoins() - INTERVIEW_CHARGE;
             if (remainingCoinBalance>0){
                 InterviewSlot interviewSlot =modelMapper.map(interviewSlotDto,InterviewSlot.class);
@@ -146,6 +147,10 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
             InterviewSlot existingSlot = interviewSlot.get();
             existingSlot.setStatus("CANCELED");
             updatedSlot = interviewSlotRepository.save(existingSlot);
+        }
+        if(interviewSlot.get().getInterviewType().startsWith("real")){
+            System.out.println("Interview is real");
+            return modelMapper.map(updatedSlot, InterviewSlotDto.class);
         }
         int remainingBalance=ytmsUser.getCoins()+INTERVIEW_CHARGE;
         ytmsUser.setCoins(remainingBalance);
