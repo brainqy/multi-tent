@@ -72,7 +72,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         Optional<YtmsUser> user = null;
         if (ObjectUtils.isNotEmpty(userDto)) {
             user = userRepository.getUserByEmail(userDto.getEmailAdd());
-            if (ObjectUtils.isEmpty(user)) {
+            if (!user.isPresent()) {
                 if (StringUtils.equals(userDto.getPassword(), userDto.getConfirmPassword())) {
                     if(userDto.getRef()!=null){
                         String newEmail = new String(Base64.getDecoder().decode(userDto.getRef()));

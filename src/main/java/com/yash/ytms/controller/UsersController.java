@@ -63,6 +63,16 @@ public class UsersController {
     public ResponseWrapperDto changePassword(@RequestBody Map<String, String> map) {
         return this.userService.changePassword(map);
     }
+    @PostMapping("/resetPassword")
+
+    public  ResponseWrapperDto resetPassword(@RequestBody Map<String, String> map){
+        ResponseWrapperDto dto = new ResponseWrapperDto();
+         this.userService.resetPassword(map);
+         dto.setMessage("SUCCESS");
+         dto.setStatus(HttpStatus.OK.toString());
+         return dto;
+
+    }
 
     @GetMapping("/get/all-trainers")
     public ResponseEntity<ResponseWrapperDto> getAllTrainers() {

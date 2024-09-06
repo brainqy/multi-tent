@@ -4,6 +4,7 @@ import com.yash.ytms.domain.YtmsUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +22,8 @@ import java.util.Optional;
 @Repository
 public interface YtmsUserRepository extends JpaRepository<YtmsUser, Long> {
 
-    @Query("select yur from YtmsUser yur where yur.emailAdd=?1")
-    Optional<YtmsUser> getUserByEmail(String email);
+    @Query("SELECT yur FROM YtmsUser yur WHERE yur.emailAdd = :newEmail")
+    Optional<YtmsUser> getUserByEmail(@Param("newEmail") String newEmail);
 
     @Query("select yur from YtmsUser yur where yur.accountStatus=com.yash.ytms.constants.UserAccountStatusTypes.PENDING")
     List<YtmsUser> getAllPendingUsers();
