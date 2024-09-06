@@ -102,6 +102,16 @@ public class ForumImpl implements ForumService {
         return forums;
     }
 
+    @Override
+    public List<ForumDto> getAllPosts(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Forum> forumPage = forumRepo.findAll(pageable);
+        List<ForumDto> forums = forumPage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return forums;
+    }
+
 
     private ForumDto convertToDto(Forum forum) {
         return modelMapper.map(forum, ForumDto.class);

@@ -20,4 +20,6 @@ public interface ForumService {
     ForumDto getForumPost(long forumId);
 
     List<ForumDto> getAllForumPosts(int page, int pageSize);
+    List<ForumDto> getAllPosts(int page, int pageSize);
+
 }
