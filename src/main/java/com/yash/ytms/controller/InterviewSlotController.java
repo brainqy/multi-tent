@@ -34,9 +34,9 @@ public class InterviewSlotController {
     }
 
     @GetMapping
-    public  ResponseEntity getAllInterviewSlots() {
+    public  ResponseEntity getAllInterviewSlots(Principal principal) {
         ResponseWrapperDto responseWrapperDto= new ResponseWrapperDto();
-        InterviewPageDto allInterviewSlots = interviewSlotService.getAllInterviewSlots();
+        InterviewPageDto allInterviewSlots = interviewSlotService.getAllInterviewSlots(principal);
         responseWrapperDto.setData(allInterviewSlots);
         responseWrapperDto.setStatus("SUCCESS");
         responseWrapperDto.setMessage("Data retrieved successfully");

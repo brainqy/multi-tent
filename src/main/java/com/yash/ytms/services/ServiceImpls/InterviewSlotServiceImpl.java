@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -98,13 +97,12 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
 
 
     @Override
-    public InterviewPageDto getAllInterviewSlots() {
+    public InterviewPageDto getAllInterviewSlots(Principal principal) {
+        String userEmail= principal.getName();
         InterviewPageDto pageDto= new InterviewPageDto();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
         Optional<YtmsUser> user = userRepository.getUserByEmail(userEmail);
         Integer userCoinBalance = user.get().getCoins();
-        List<InterviewSlot> slots = interviewSlotRepository.findAll();
+        List<InterviewSlot> slots = interviewSlotRepository.getByEmail(userEmail);
         // Map each InterviewSlot entity to InterviewSlotDto
         List<InterviewSlotDto> slotDtos = slots.stream()
                 .map(slot -> modelMapper.map(slot, InterviewSlotDto.class))

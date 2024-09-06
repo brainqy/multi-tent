@@ -21,4 +21,6 @@ import java.util.List;
 public interface InterviewSlotRepository extends JpaRepository<InterviewSlot, Long> {
     @Query("SELECT r FROM InterviewSlot r WHERE r.job = :job and r.scheduleUser.emailAdd=:userEmail")
     List<InterviewSlot> getAllInterviewsyJobId(@Param("job")Job job,@Param("userEmail") String userEmail);
+    @Query("SELECT r FROM InterviewSlot r WHERE r.scheduleUser.emailAdd=:userEmail")
+    List<InterviewSlot> getByEmail(String userEmail);
 }
