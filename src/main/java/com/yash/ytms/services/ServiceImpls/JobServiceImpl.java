@@ -7,6 +7,7 @@ import com.yash.ytms.services.IServices.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ return  jobs;
     }
 
     @Override
-    public ResponseWrapperDto save(Job job) {
+    public ResponseWrapperDto save(Job job, Principal principal) {
         Job savedJob = jobRepository.save(job);
         return createResponse("SUCCESS", "Job saved successfully", savedJob);
     }
@@ -55,6 +56,12 @@ return  jobs;
     @Override
     public List<Job> findByStatus(String status) {
         List<Job> jobs = jobRepository.findAllByStatus(status);
+        return  jobs;
+    }
+
+    @Override
+    public List<Job> getJobsByEmail(String userEmail) {
+        List<Job> jobs = jobRepository.getJobsByEmail(userEmail);
         return  jobs;
     }
 

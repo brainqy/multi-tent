@@ -11,21 +11,19 @@ package com.yash.ytms.services.IServices;
 
 import com.yash.ytms.domain.Job;
 import com.yash.ytms.dto.ResponseWrapperDto;
-import com.yash.ytms.repository.JobRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 
 public interface JobService {
-    public ResponseWrapperDto save(Job job);
+    public ResponseWrapperDto save(Job job, Principal principal);
     public List<Job>  findAll();
     public Job findById(Long id);
     public ResponseWrapperDto deleteById(Long id);
     public List<Job> findByStatus(String status);
 
 
+    List<Job> getJobsByEmail(String userEmail);
 }
 

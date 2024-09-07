@@ -31,5 +31,6 @@ public class Job {
     private String jobListingUrl;
     private Double salary;
     private String dateSpecified;
+    private String createdBy;
 
 }

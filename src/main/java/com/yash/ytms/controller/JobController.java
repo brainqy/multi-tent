@@ -10,13 +10,13 @@ package com.yash.ytms.controller;
  */
 import com.yash.ytms.domain.Job;
 import com.yash.ytms.dto.ResponseWrapperDto;
-import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.services.IServices.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +28,9 @@ public class JobController {
     private JobService jobService;
 
     @GetMapping
-    public List<Job>  getAllJobs() {
-        List<Job>  jobs = jobService.findAll();
+    public List<Job>  getAllJobsByEmail(Principal principal) {
+        String userEmail=principal.getName();
+        List<Job>  jobs = jobService.getJobsByEmail(userEmail);
          return  jobs;
 
     }
@@ -45,26 +46,29 @@ public class JobController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Job> createJob(@RequestBody Job job) {
-        jobService.save(job);
+    public ResponseEntity<Job> createJob(@RequestBody Job job,Principal principal) {
+        String userEmail= principal.getName();
+        job.setCreatedBy(userEmail);
+        jobService.save(job, principal);
         return new ResponseEntity<>(job, HttpStatus.CREATED);
     }
 
     @PutMapping("/jobs/{id}")
-    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job jobDetails) {
+    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job jobDetails,Principal principal) {
         Optional<Job> jobOptional = Optional.ofNullable(jobService.findById(id));
         Job job= jobOptional.get();
                     job.setJobRole(jobDetails.getJobRole());
                     job.setJobLocation(jobDetails.getJobLocation());
                     job.setCompany(jobDetails.getCompany());
                     job.setStatus(jobDetails.getStatus());
-                     jobService.save(job);
+                     jobService.save(job, principal);
                      return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseWrapperDto> updateJobStatus(@PathVariable Long id, @RequestBody Job jobDetails) {
+    public ResponseEntity<ResponseWrapperDto> updateJobStatus(@PathVariable Long id, @RequestBody Job jobDetails, Principal principal) {
+        String userEmail= principal.getName();
         Job job = Optional.ofNullable(jobService.findById(id)).get();
         job.setStatus(jobDetails.getStatus());
         job.setJobLocation(jobDetails.getJobLocation());
@@ -74,7 +78,8 @@ public class JobController {
         job.setJobListingUrl(jobDetails.getJobListingUrl());
         job.setJobDescription(jobDetails.getJobDescription());
         job.setSalary(jobDetails.getSalary());
-        ResponseWrapperDto updatedJob = jobService.save(job);
+        job.setCreatedBy(userEmail);
+        ResponseWrapperDto updatedJob = jobService.save(job,principal);
         return new ResponseEntity(updatedJob, HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
