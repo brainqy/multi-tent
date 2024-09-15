@@ -63,4 +63,9 @@ public class YtmsUser {
 
     @OneToMany(mappedBy = "referrer", cascade = CascadeType.ALL)
     private List<Referral> referrals = new ArrayList<>();
+    @ManyToMany
+    private List<Badge> earnedBadges;
+    private int xpPoints;
+    private int tasksCompleted;
+    private int coursesCompleted;
 }

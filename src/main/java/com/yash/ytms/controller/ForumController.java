@@ -55,5 +55,21 @@ public class ForumController {
         List<ForumDto> forumDto = forumService.getAllForumPosts(page, pageSize);
         return ResponseEntity.ok(forumDto);
     }
-
+    @GetMapping("/posts")
+    public ResponseEntity<List<ForumDto>> getAllBlogPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        List<ForumDto> forumDto = forumService.getAllPosts(page, pageSize);
+        return ResponseEntity.ok(forumDto);
+    }
+    @GetMapping("/posts/{forumId}")
+    public ResponseEntity<ForumDto> getBlogPost(@PathVariable long forumId) {
+        ForumDto forumDto = forumService.getForumPost(forumId);
+        if (forumDto != null) {
+            return ResponseEntity.ok(forumDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

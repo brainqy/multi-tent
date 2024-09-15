@@ -3,6 +3,7 @@ package com.yash.ytms.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yash.ytms.constants.UserAccountStatusTypes;
+import com.yash.ytms.domain.Badge;
 import com.yash.ytms.domain.Referral;
 import lombok.Data;
 
@@ -54,4 +55,8 @@ public class YtmsUserDto {
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
+    private List<Badge> earnedBadges;
+    private int xpPoints;
+    private int tasksCompleted;
+    private int coursesCompleted;
 }

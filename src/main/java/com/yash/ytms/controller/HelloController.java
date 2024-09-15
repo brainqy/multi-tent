@@ -26,21 +26,5 @@ public class HelloController {
     public HelloDto getHello(){
         return   new HelloDto("Hello User in branch") ;
     }
-    @GetMapping("/posts")
-    public ResponseEntity<List<ForumDto>> getAllForumPosts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize
-    ) {
-        List<ForumDto> forumDto = forumService.getAllPosts(page, pageSize);
-        return ResponseEntity.ok(forumDto);
-    }
-    @GetMapping("/posts/{forumId}")
-    public ResponseEntity<ForumDto> getForum(@PathVariable long forumId) {
-        ForumDto forumDto = forumService.getForumPost(forumId);
-        if (forumDto != null) {
-            return ResponseEntity.ok(forumDto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 }
