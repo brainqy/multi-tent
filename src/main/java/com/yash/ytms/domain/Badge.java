@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Description of the class or file.
  *
@@ -29,4 +31,6 @@ public class Badge {
     @Enumerated(EnumType.STRING)
     private BadgeRule rule;  // Enum for badge rules
     private int threshold;
+    @ManyToMany(mappedBy = "earnedBadges") // Bidirectional relationship with YtmsUser
+    private List<YtmsUser> users;
 }

@@ -3,6 +3,7 @@ package com.yash.ytms.services.IServices;
 import com.yash.ytms.dto.BadgeDto;
 import com.yash.ytms.dto.YtmsUserDto;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -21,4 +22,8 @@ public interface BadgeService {
     boolean checkBadgeEligibility(YtmsUserDto user, BadgeDto badge);  // Check if the user can earn a badge
 
     List<BadgeDto> assignBadgesToUser(YtmsUserDto user);  // Assign eligible badges to the user
+
+    void assignEligibleBadgesToAllUsers();
+
+    List<BadgeDto> getAssignedBadgesByUserName(Principal principal);
 }

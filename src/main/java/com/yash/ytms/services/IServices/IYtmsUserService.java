@@ -36,4 +36,6 @@ public interface IYtmsUserService {
     ResponseWrapperDto getAllTrainers();
     String SetLoginHistory(String email);
     ProfileCompletionDto getProfileCompletion(YtmsUserDto userDto);
+
+    List<YtmsUserDto> getAllUsers();
 }

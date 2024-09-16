@@ -2,7 +2,11 @@ package com.yash.ytms.repository;
 
 import com.yash.ytms.domain.Badge;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Description of the class or file.
@@ -15,4 +19,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
     Badge findByNameIgnoreCase(String name);
+    //@Query("SELECT b FROM Badge b JOIN b.users u WHERE u.username = :username")
+    @Query("SELECT b FROM Badge b JOIN b.users u WHERE u.emailAdd = :emailAdd")
+    List<Badge> getAssignedBadgesByUserName(@Param("emailAdd") String emailAdd);
+
 }

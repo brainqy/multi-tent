@@ -106,6 +106,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
 
 
     @Override
+    @Transactional
     public YtmsUserDto getUserByEmailAdd(String emailAdd) {
         YtmsUserDto userDto = null;
         Optional<YtmsUser> user = null;
@@ -123,12 +124,14 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
+    @Transactional
     public List<YtmsUserDto> getAllPendingUsers() {
         List<YtmsUser> pendingUsers = this.userRepository.getAllPendingUsers();
         return pendingUsers.stream().map(penUser -> this.modelMapper.map(penUser, YtmsUserDto.class)).toList();
     }
 
     @Override
+    @Transactional
     public Boolean approvePendingUser(String emailAdd) {
         if (StringUtils.isNotEmpty(emailAdd)) {
             Integer status = this.userRepository.approvePendingUser(emailAdd);
@@ -142,6 +145,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
+    @Transactional
     public Boolean declinePendingUser(String emailAdd) {
         if (StringUtils.isNotEmpty(emailAdd)) {
             Integer status = this.userRepository.declinePendingUser(emailAdd);
@@ -155,6 +159,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
+    @Transactional
     public ResponseWrapperDto forgotPassword(String email) {
         ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
         if (StringUtils.isNotEmpty(email)) {
@@ -183,6 +188,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
+    @Transactional
     public Boolean resetPassword(Map<String, String> map) {
         String email = map.get("email");
         String password = map.get("password");
@@ -198,6 +204,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
+    @Transactional
     public ResponseWrapperDto changePassword(Map<String, String> map) {
         String password = map.get("password");
         String oldPassword = map.get("oldPassword");
@@ -228,6 +235,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
+    @Transactional
     public ResponseWrapperDto getAllTrainers() {
         List<YtmsUser> allTrainers = this.userRepository.findAllTrainers();
         List<YtmsUserDto> trainersDtoList = allTrainers != null && !allTrainers.isEmpty()
@@ -248,6 +256,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
 
 
     @Override
+    @Transactional
     public String SetLoginHistory(String currentUserEmail) {
         Optional<YtmsUser> currentUser = userRepository.getUserByEmail(currentUserEmail);
         // create new login history
@@ -265,6 +274,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
     }
 
     @Override
+    @Transactional
     public ProfileCompletionDto getProfileCompletion(YtmsUserDto user) {
         ProfileCompletionDto profileDto= new ProfileCompletionDto();
         int totalFields = 0;
@@ -290,4 +300,15 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         profileDto.setUncompletedFields(uncompletedFields);
         return profileDto;
     }
+
+    @Override
+    @Transactional
+    public List<YtmsUserDto> getAllUsers() {
+        List<YtmsUser> users = userRepository.getAllUsers();
+        List<YtmsUserDto> usrdto = users.stream()
+                .map(usr -> modelMapper.map(usr, YtmsUserDto.class))
+                .collect(Collectors.toList());  // Use collect instead of toList()
+        return usrdto;
+    }
+
 }

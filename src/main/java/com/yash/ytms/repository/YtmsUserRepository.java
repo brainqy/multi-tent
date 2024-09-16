@@ -40,4 +40,7 @@ public interface YtmsUserRepository extends JpaRepository<YtmsUser, Long> {
 
     @Query("select yur from YtmsUser yur where yur.userRole.roleTypes='ROLE_TRAINER'")
     List<YtmsUser> findAllTrainers();
+    @Query("select yur from YtmsUser yur")
+
+    List<YtmsUser> getAllUsers();
 }

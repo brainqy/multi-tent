@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,9 +56,10 @@ public class BadgeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @PostMapping("/assign/{username}")
-    public ResponseEntity<List<BadgeDto>> assignBadges(@PathVariable String username) {
-        YtmsUserDto userOptional = userService.getUserByEmailAdd(username);
+    @PostMapping("/assignEligible")
+    public ResponseEntity<List<BadgeDto>> assignBadges(Principal principal) {
+        String userName= principal.getName();
+        YtmsUserDto userOptional = userService.getUserByEmailAdd(userName);
         if (userOptional!=null) {
 
             List<BadgeDto> badges = badgeService.assignBadgesToUser(userOptional);
@@ -76,6 +78,11 @@ public class BadgeController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping("/getMyBadges")
+    public ResponseEntity<List<BadgeDto>> getAssignedBadgesByUserName(Principal principal) {
+        List<BadgeDto> badges = badgeService.getAssignedBadgesByUserName(principal);
+        return ResponseEntity.ok(badges);
     }
 }
 
