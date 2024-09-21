@@ -21,7 +21,7 @@ public class BadgeSchedulerService {
     }
 
     // This method runs every 12 hours
-    @Scheduled(fixedRate = 12 * 60 * 60 * 1000)  // 12 hours in milliseconds
+    //@Scheduled(fixedRate = 12 * 60 * 60 * 1000)  // 12 hours in milliseconds
     public void checkAndAssignBadges() {
         // Assuming badgeService has logic to find all users and check eligibility
         badgeService.assignEligibleBadgesToAllUsers();

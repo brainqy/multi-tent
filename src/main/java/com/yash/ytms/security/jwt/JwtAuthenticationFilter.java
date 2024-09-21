@@ -59,41 +59,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 try {
                     userName = this.jwtTokenHelper.getUserNameFromToken(token);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.error("Unable to get Jwt Token !!",
-                            new ApplicationException("Unable to get Jwt Token !!"));
+                    LOGGER.error("Unable to get Jwt Token !!", e);
+                    setErrorResponse(HttpServletResponse.SC_BAD_REQUEST, response, "Unable to get Jwt Token !!");
+                    return;
                 } catch (ExpiredJwtException e) {
-
-                    LOGGER.error("Jwt Token has expired !!",
-                            new JwtTokenExpiredException("Jwt Token has expired !!"));
+                    LOGGER.error("Jwt Token has expired !!", e);
+                    setErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response, "Jwt Token has expired !!");
+                    return;
                 } catch (MalformedJwtException e) {
-                    LOGGER.error("Invalid Jwt !!",
-                            new ApplicationException("Invalid Jwt !!"));
+                    LOGGER.error("Invalid Jwt !!", e);
+                    setErrorResponse(HttpServletResponse.SC_BAD_REQUEST, response, "Invalid Jwt Token !!");
+                    return;
                 }
-            } else
+            } else {
                 LOGGER.info("Jwt Token does not begin with Bearer.");
+            }
         }
 
         if (StringUtils.isNotEmpty(userName)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
-            CustomUserDetails userDetails = null;
-            userDetails = this.userDetailsService.loadUserByUsername(userName);
+            CustomUserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
 
             if (ObjectUtils.isNotEmpty(userDetails)) {
                 if (this.jwtTokenHelper.validateToken(token, userDetails)) {
-
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
-                            null,
-                            userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                } else
-                    LOGGER.error("Invalid Jwt token !!",
-                            new ApplicationException("Invalid Jwt token !!"));
-            } else
-                LOGGER.error("Wrong User details provided !!",
-                        new ApplicationException("Wrong User details provided !!"));
+                } else {
+                    LOGGER.error("Invalid Jwt token !!");
+                    setErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response, "Invalid Jwt token !!");
+                    return;
+                }
+            } else {
+                LOGGER.error("Wrong User details provided !!");
+                setErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, response, "Wrong User details provided !!");
+                return;
+            }
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    private void setErrorResponse(int status, HttpServletResponse response, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"" + message + "\"}");
     }
 }
