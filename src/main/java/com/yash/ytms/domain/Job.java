@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import com.yash.ytms.domain.resume.Resume;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,5 +33,7 @@ public class Job {
     private Double salary;
     private String dateSpecified;
     private String createdBy;
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Resume> resumes;
 
 }
