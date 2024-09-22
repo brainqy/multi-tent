@@ -1,12 +1,15 @@
 package com.yash.ytms.controller;
 
 import com.yash.ytms.domain.forum.ForumDto;
+import com.yash.ytms.domain.resume.ResumeDto;
+import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.services.IServices.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -54,6 +57,24 @@ public class ForumController {
     ) {
         List<ForumDto> forumDto = forumService.getAllForumPosts(page, pageSize);
         return ResponseEntity.ok(forumDto);
+    }
+    @GetMapping("/getAllBookmarked")
+    public ResponseEntity<List<ForumDto>> getAllBookmarkedForumPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize,
+            Principal principal
+    ) {
+        List<ForumDto> forumDto = forumService.getAllBookmarkedForumPosts(page, pageSize,principal);
+        return ResponseEntity.ok(forumDto);
+    }
+
+    @PutMapping("/{id}/star")
+    public ResponseEntity<ForumDto> saveAsStarred(@PathVariable Long id) {
+        ForumDto updatedEntity = this.forumService.saveAsBookmarked(id);
+        ResponseWrapperDto wrapperDto= new ResponseWrapperDto();
+        wrapperDto.setStatus("SUCCESS");
+        wrapperDto.setData(updatedEntity);
+        return new ResponseEntity(wrapperDto,HttpStatus.OK);
     }
 
 }

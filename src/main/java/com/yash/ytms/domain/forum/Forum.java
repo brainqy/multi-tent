@@ -33,6 +33,7 @@ public class Forum {
     @NotNull
     private String forum_body;
     private String createdBy;
+    private boolean bookmarked;
     private LocalDateTime createdAt;
     private List<String> tags;
 }

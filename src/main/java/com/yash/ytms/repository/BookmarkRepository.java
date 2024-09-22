@@ -16,7 +16,8 @@ import java.util.Optional;
  * @since 17-09-2024
  */
 @Repository
-public interface BookmarkRepository extends JpaRepository<Bookmark, String> {
+public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     List<Bookmark> findByUserEmail(String userEmail);
-    Optional<Bookmark> findByUserEmailAndArticleUrl(String userEmail, String articleId); // Or JobId
+
+    Optional<Bookmark> findByUserEmailAndPostId(String username, long postId);
 }

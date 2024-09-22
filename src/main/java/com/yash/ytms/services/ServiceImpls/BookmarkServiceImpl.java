@@ -2,6 +2,7 @@ package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.Bookmark;
 import com.yash.ytms.domain.YtmsUser;
+import com.yash.ytms.domain.resume.PostType;
 import com.yash.ytms.repository.BookmarkRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
 import com.yash.ytms.services.IServices.IBookmarkService;
@@ -30,25 +31,37 @@ public class BookmarkServiceImpl implements IBookmarkService {
     private YtmsUserRepository userRepository;
     @Override
     @Transactional
-    public Bookmark addBookmark(Principal principal, String articleUrl) {
-        String userName=principal.getName();
+    public Bookmark addBookmark(Principal principal, long postId) {
+        String userName = principal.getName();
         YtmsUser user = userRepository.getUserByEmail(userName)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        // Check if the bookmark already exists for the given postId and user
+        Optional<Bookmark> existingBookmark = bookmarkRepository.findByUserEmailAndPostId(userName, postId);
 
-        Bookmark bookmark = new Bookmark();
-        bookmark.setUserEmail(userName);
-        bookmark.setArticleUrl(articleUrl);
-        bookmark.setCreatedAt(LocalDateTime.now());
+        if (existingBookmark.isPresent()) {
+            // If bookmark exists, remove it (unbookmark)
+            bookmarkRepository.deleteById(existingBookmark.get().getId());
+            return existingBookmark.get(); // Return removed bookmark
+        } else {
+            // If bookmark doesn't exist, add a new one
+            Bookmark bookmark = new Bookmark();
+            bookmark.setUserEmail(userName);
+            bookmark.setPostId(postId);
+            bookmark.setPostType(PostType.BLOGPOST); // Assuming you're bookmarking a blogpost
+            bookmark.setCreatedAt(LocalDateTime.now());
 
-        return bookmarkRepository.save(bookmark);
+            Bookmark savedBookmark = bookmarkRepository.save(bookmark);
+            return savedBookmark; // Return the newly created bookmark
+        }
     }
+
 
     @Override
     @Transactional
-    public void removeBookmark(Principal principal, String articleId) {
+    public void removeBookmark(Principal principal, long postId) {
         String username=principal.getName();
-        Optional<Bookmark> bookmark = bookmarkRepository.findByUserEmailAndArticleUrl(username, articleId);
+        Optional<Bookmark> bookmark = bookmarkRepository.findByUserEmailAndPostId(username, postId);
         bookmark.ifPresent(bookmarkRepository::delete);
 
     }

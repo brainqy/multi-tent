@@ -1,5 +1,6 @@
 package com.yash.ytms.dto;
 
+import com.yash.ytms.domain.resume.PostType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,8 @@ public class BookmarkDto {
 
     private Long id;
     private String userEmail;
-    private String articleUrl;
+    private long postId;
+    private PostType postType;
     private LocalDateTime createdAt;
 
     // Constructors, getters, setters

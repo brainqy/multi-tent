@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import com.yash.ytms.domain.resume.PostType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +31,10 @@ public class Bookmark {
 
 
     @JoinColumn(name = "article_id")  // Or job_id depending on what you're bookmarking
-    private String articleUrl;
+    private long postId;
+
+    @JoinColumn(name = "post_type")
+    private PostType postType;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

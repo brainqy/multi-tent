@@ -2,6 +2,7 @@ package com.yash.ytms.services.IServices;
 
 import com.yash.ytms.domain.forum.ForumDto;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -21,5 +22,7 @@ public interface ForumService {
 
     List<ForumDto> getAllForumPosts(int page, int pageSize);
     List<ForumDto> getAllPosts(int page, int pageSize);
+     ForumDto saveAsBookmarked(Long id);
 
+    List<ForumDto> getAllBookmarkedForumPosts(int page, int pageSize, Principal principal);
 }

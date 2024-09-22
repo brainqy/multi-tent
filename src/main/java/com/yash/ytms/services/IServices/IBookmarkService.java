@@ -1,6 +1,7 @@
 package com.yash.ytms.services.IServices;
 
 import com.yash.ytms.domain.Bookmark;
+import jakarta.transaction.Transactional;
 
 import java.security.Principal;
 
@@ -13,7 +14,10 @@ import java.security.Principal;
  * @since 17-09-2024
  */
 public interface IBookmarkService {
-    public Bookmark addBookmark(Principal principal, String articleId);
-    public void removeBookmark(Principal principal, String articleId);
+
+    @Transactional
+    Bookmark addBookmark(Principal principal, long postId);
+
+    public void removeBookmark(Principal principal, long postId);
 
 }

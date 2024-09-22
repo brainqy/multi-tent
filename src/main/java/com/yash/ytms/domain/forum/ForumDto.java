@@ -25,6 +25,7 @@ public class ForumDto {
     private long forum_id;
     private String forum_title;
     private String forum_body;
+    private boolean bookmarked;
     private String createdBy;
     private String createdAt;
     private List<String> tags;

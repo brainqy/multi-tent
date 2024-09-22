@@ -3,10 +3,13 @@ package com.yash.ytms.services.ServiceImpls;
 import com.yash.ytms.domain.YtmsUser;
 import com.yash.ytms.domain.forum.Forum;
 import com.yash.ytms.domain.forum.ForumDto;
+import com.yash.ytms.domain.resume.Resume;
+import com.yash.ytms.domain.resume.ResumeDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ForumRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
 import com.yash.ytms.services.IServices.ForumService;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +112,35 @@ public class ForumImpl implements ForumService {
         Page<Forum> forumPage = forumRepo.findAll(pageable);
         List<ForumDto> forums = forumPage.getContent().stream()
                 .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return forums;
+    }
+    @Override
+    public ForumDto saveAsBookmarked(Long id) {
+        Optional<Forum> optionalEntity = forumRepo.findById(id);
+        if (optionalEntity.isPresent()) {
+            Forum entity = optionalEntity.get();
+            if(entity.isBookmarked()){
+                entity.setBookmarked(false);
+            }else {
+                entity.setBookmarked(true);
+            }
+            forumRepo.save(entity);
+            ForumDto entityDto = modelMapper.map(entity, ForumDto.class);
+            return entityDto;
+        }
+        throw new EntityNotFoundException("SectionDataWrapperDto not found with id: " + id);
+
+    }
+
+    @Override
+    public List<ForumDto> getAllBookmarkedForumPosts(int page, int pageSize, Principal principal) {
+        String userEmail=principal.getName();
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Forum> forumPage = forumRepo.findAll(pageable);
+        List<ForumDto> forums = forumPage.getContent().stream()
+                .map(this::convertToDto)
+                .filter(s->s.isBookmarked()==true&(s.getCreatedBy().equals(userEmail)))
                 .collect(Collectors.toList());
         return forums;
     }
