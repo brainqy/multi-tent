@@ -12,6 +12,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -35,6 +38,7 @@ public class ResumeServiceImpl implements ResumeService {
     private ModelMapper modelMapper;
     @Override
     @Transactional
+    @CachePut(value = "resumeCache", key = "#resume.getId()")
     public Resume saveResume(ResumeDto resumeDTO,Principal principal) {
         String userEmail=principal.getName();
         // Convert ResumeDTO to Resume entity
@@ -91,6 +95,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    @CachePut(value = "resumeCache", key = "#id")
     public ResumeDto saveAsStarred(Long id) {
         Optional<Resume> optionalEntity = resumeRepository.findById(id);
         if (optionalEntity.isPresent()) {
@@ -109,10 +114,12 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    @Cacheable(value = "resumeCache", key = "#id")
     public Optional<Resume> getResumeById(Long id) {
         return resumeRepository.findById(id);
     }
     @Override
+    @Cacheable(value = "resumeCache", key = "#principal.getName()")
     public List<Resume> getAllResumes(Principal principal) {
         String userEmail=principal.getName();
 
@@ -121,6 +128,11 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public void deleteResume(Long id) {
         resumeRepository.deleteById(id);
+        evictResumeFromCache(id);
+    }
+    @CacheEvict(value = "resumeCache", key = "#id")
+    public void evictResumeFromCache(Long id) {
+        // This will clear the cache for the specific resume ID
     }
 
 }

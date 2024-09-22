@@ -12,6 +12,8 @@ import com.yash.ytms.services.IServices.ForumService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +55,7 @@ public class ForumImpl implements ForumService {
          return modelMapper.map(forumEntity,ForumDto.class);
     }
     @Override
+    @CacheEvict(value = "forums", allEntries = true)
     public ForumDto updateForum(long forumId, ForumDto forumDto) {
         Forum existingForum = forumRepo.findById(forumId)
                 .orElseThrow(() -> new ApplicationException("Forum not found with id: " + forumId));
@@ -70,6 +73,7 @@ public class ForumImpl implements ForumService {
     }
 
     @Override
+    @CacheEvict(value = "forums", allEntries = true)
     public void deleteForum(long forumId) {
         Forum existingForum = forumRepo.findById(forumId)
                 .orElseThrow(() -> new ApplicationException("Forum post not found with id: " + forumId));
@@ -89,6 +93,7 @@ public class ForumImpl implements ForumService {
         }
     }
     @Override
+    @Cacheable(value = "forums", key = "#page + '-' + #pageSize")
     public List<ForumDto> getAllForumPosts(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Forum> forumPage = forumRepo.findAll(pageable);
