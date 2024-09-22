@@ -1,5 +1,6 @@
 package com.yash.ytms.domain.resume;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -33,7 +34,7 @@ public class Experience {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference // To handle parent-child relationship
     private Resume resume;
 
     private String jobTitle;

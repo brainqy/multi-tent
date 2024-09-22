@@ -1,5 +1,6 @@
 package com.yash.ytms.domain.resume;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class Qualification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference // To handle parent-child relationship
     private Resume resume;
 
     private String degree;

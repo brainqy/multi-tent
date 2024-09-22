@@ -1,5 +1,7 @@
 package com.yash.ytms.domain.resume;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yash.ytms.domain.Job;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +35,7 @@ public class Resume {
     @Column(columnDefinition = "LONGBLOB") // Ensure larger file size is supported
     private byte[] resume;*/
     @ManyToOne(fetch = FetchType.LAZY) // Many resumes can be associated with one job
-    @JoinColumn(name = "job_id")
+    @JoinColumn(name = "job_id", nullable = true) // job_id can be null
     private Job job;
 
     // Applicant's basic details
@@ -51,10 +53,12 @@ public class Resume {
 
     // Work experiences (multiple experiences for each resume)
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // To handle parent-child relationship
     private List<Experience> experiences;
 
     // Qualifications (multiple degrees or qualifications)
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // To handle parent-child relationship
     private List<Qualification> qualifications;
 
     // Certifications and achievements
@@ -73,11 +77,12 @@ public class Resume {
     private String referenceEmail;
     private String referencePhone;
 
-
+    private  boolean isStarred;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)
     private LocalDateTime lastModified;
+    private  String createdBy;
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

@@ -41,5 +41,7 @@ public class ResumeDto {
     private String referenceName;
     private String referenceEmail;
     private String referencePhone;
+    private  boolean isStarred;
+    private String createdBy;
 }
 

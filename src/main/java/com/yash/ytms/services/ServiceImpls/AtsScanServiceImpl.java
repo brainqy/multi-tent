@@ -102,7 +102,12 @@ List<SectionDataDto> data= new ArrayList<>();
         Optional<SectionDataWrapper> optionalEntity = atsRepository.findById(id);
         if (optionalEntity.isPresent()) {
             SectionDataWrapper entity = optionalEntity.get();
-            entity.setStarred(true);
+           // entity.setStarred(true);
+            if(entity.isStarred()){
+                entity.setStarred(false);
+            }else {
+                entity.setStarred(true);
+            }
             atsRepository.save(entity);
             SectionDataWrapperDto entityDto = modelMapper.map(entity, SectionDataWrapperDto.class);
        return entityDto;
