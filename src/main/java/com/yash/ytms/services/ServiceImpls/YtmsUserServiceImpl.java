@@ -9,6 +9,7 @@ import com.yash.ytms.domain.YtmsUser;
 import com.yash.ytms.dto.*;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.security.userdetails.CustomUserDetails;
 import com.yash.ytms.services.IServices.IOrganizationService;
 import com.yash.ytms.services.IServices.IReferralService;
@@ -20,6 +21,8 @@ import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -42,6 +45,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class YtmsUserServiceImpl implements IYtmsUserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IYtmsUserService.class);
 
     @Autowired
     private YtmsUserRepository userRepository;

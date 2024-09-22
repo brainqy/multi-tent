@@ -2,6 +2,7 @@ package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.forum.ForumDto;
 import com.yash.ytms.dto.QuestionDto;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ForumService;
 import com.yash.ytms.services.IServices.QuestionService;
 import org.slf4j.Logger;
@@ -27,6 +28,8 @@ import java.util.Map;
  */
 @Component
 public class ScheduledServiceImpl {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledServiceImpl.class);
+
     @Autowired
     ForumService forumService;
     private final ChatClient chatClient;

@@ -3,7 +3,10 @@ package com.yash.ytms.services.ServiceImpls;
 import com.yash.ytms.domain.Job;
 import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.repository.JobRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.JobService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,8 @@ import java.util.Optional;
  */
 @Service
 public class JobServiceImpl implements JobService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
+
 
     @Autowired
     private JobRepository jobRepository;

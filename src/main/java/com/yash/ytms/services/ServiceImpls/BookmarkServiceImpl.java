@@ -5,8 +5,11 @@ import com.yash.ytms.domain.YtmsUser;
 import com.yash.ytms.domain.resume.PostType;
 import com.yash.ytms.repository.BookmarkRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IBookmarkService;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,8 @@ import java.util.Optional;
  */
 @Service
 public class BookmarkServiceImpl implements IBookmarkService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkServiceImpl.class);
+
     @Autowired
     private BookmarkRepository bookmarkRepository;
     @Autowired

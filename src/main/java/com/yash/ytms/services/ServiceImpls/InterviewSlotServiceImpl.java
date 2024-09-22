@@ -6,10 +6,13 @@ import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.CoinTransactionRepository;
 import com.yash.ytms.repository.InterviewSlotRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import com.yash.ytms.services.IServices.InterviewSlotService;
 import com.yash.ytms.services.IServices.JobService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +37,9 @@ import static com.yash.ytms.constants.AppConstants.INTERVIEW_CHARGE;
  */
 @Service
 public class InterviewSlotServiceImpl implements InterviewSlotService {
-  @Autowired
+    private static final Logger LOGGER = LoggerFactory.getLogger(InterviewSlotServiceImpl.class);
+
+    @Autowired
     private InterviewSlotRepository interviewSlotRepository;
   @Autowired
   private YtmsUserRepository userRepository;

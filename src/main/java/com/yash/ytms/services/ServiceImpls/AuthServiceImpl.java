@@ -7,6 +7,7 @@ import com.yash.ytms.dto.DailyStreakDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.security.jwt.JwtAuthRequest;
 import com.yash.ytms.security.jwt.JwtAuthResponse;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.security.jwt.JwtTokenHelper;
 import com.yash.ytms.security.userdetails.CustomUserDetails;
 import com.yash.ytms.security.userdetails.CustomUserDetailsServiceImpl;
@@ -17,6 +18,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.internal.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,6 +36,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AuthServiceImpl implements IAuthService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
+
 
     @Autowired
     private JwtTokenHelper tokenHelper;

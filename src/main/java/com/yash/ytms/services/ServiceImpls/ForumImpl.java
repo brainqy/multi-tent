@@ -8,9 +8,12 @@ import com.yash.ytms.domain.resume.ResumeDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ForumRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ForumService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,6 +40,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ForumImpl implements ForumService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForumImpl.class);
+
     @Autowired
     private ForumRepository forumRepo;
     @Autowired

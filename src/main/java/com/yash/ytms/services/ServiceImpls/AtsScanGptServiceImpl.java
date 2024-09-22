@@ -4,8 +4,11 @@ import com.yash.ytms.domain.atsscan.SectionDataWrapper;
 import com.yash.ytms.domain.atsscan.SectionDataWrapperDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.AtsRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.AtsScanService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -33,6 +36,8 @@ import java.util.stream.Collectors;
 @Service
 @Qualifier("gptScan")
 public class AtsScanGptServiceImpl implements AtsScanService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AtsScanGptServiceImpl.class);
+
     @Autowired
     private ChatClient chatClient;
     @Autowired

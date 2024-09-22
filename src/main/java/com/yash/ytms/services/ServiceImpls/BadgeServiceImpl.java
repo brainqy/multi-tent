@@ -6,10 +6,13 @@ import com.yash.ytms.dto.BadgeDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.repository.BadgeRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.BadgeService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class BadgeServiceImpl implements BadgeService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BadgeServiceImpl.class);
+
     @Autowired
     private BadgeRepository badgeRepository;
     @Autowired

@@ -8,11 +8,14 @@ import com.yash.ytms.dto.ScheduleEventDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ScheduleEventRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IScheduleEventService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -25,6 +28,7 @@ import java.util.Optional;
 
 @Service
 public class ScheduleEventServiceImpl implements IScheduleEventService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IScheduleEventService.class);
 
     @Autowired
     private ScheduleEventRepository scheduleEventRepository;

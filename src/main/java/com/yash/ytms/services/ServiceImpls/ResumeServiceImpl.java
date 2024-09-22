@@ -7,10 +7,13 @@ import com.yash.ytms.domain.resume.Qualification;
 import com.yash.ytms.domain.resume.Resume;
 import com.yash.ytms.domain.resume.ResumeDto;
 import com.yash.ytms.repository.ResumeRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ResumeService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -32,6 +35,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ResumeServiceImpl implements ResumeService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResumeServiceImpl.class);
+
     @Autowired
     private ResumeRepository resumeRepository;
     @Autowired

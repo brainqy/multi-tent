@@ -5,10 +5,13 @@ import com.yash.ytms.domain.UserRole;
 import com.yash.ytms.dto.UserRoleDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.UserRoleRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IUserRoleService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserRoleServiceImpl implements IUserRoleService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IUserRoleService.class);
 
     @Autowired
     private ModelMapper modelMapper;

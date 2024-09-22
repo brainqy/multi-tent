@@ -9,9 +9,12 @@ import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.CoinTransactionRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ICoinTransactionsService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,8 @@ import java.util.Optional;
  */
 @Service
 public class ICoinTransactionsServiceImpl implements ICoinTransactionsService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ICoinTransactionsServiceImpl.class);
+
     @Autowired
     CoinTransactionRepository coinTransactionRepository;
     @Autowired

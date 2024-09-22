@@ -5,8 +5,11 @@ import com.yash.ytms.domain.Organization;
 import com.yash.ytms.dto.OrganizationDto;
 import com.yash.ytms.repository.OrganizationRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IOrganizationService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,8 @@ import java.util.UUID;
  */
 @Service
 public class IOrganizationServiceImpl implements IOrganizationService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IOrganizationServiceImpl.class);
+
     @Autowired
     private OrganizationRepository organizationRepository;
 

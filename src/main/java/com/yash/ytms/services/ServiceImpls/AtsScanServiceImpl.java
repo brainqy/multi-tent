@@ -2,9 +2,12 @@ package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.atsscan.*;
 import com.yash.ytms.repository.AtsRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.AtsScanService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 @Service
 @Qualifier("noGptScan")
 public class AtsScanServiceImpl implements AtsScanService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AtsScanServiceImpl.class);
+
     @Autowired
     private ModelMapper modelMapper;
     @Autowired

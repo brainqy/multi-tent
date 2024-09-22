@@ -8,10 +8,13 @@ import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.repository.CoinTransactionRepository;
 import com.yash.ytms.repository.ReferralRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IReferralService;
 import com.yash.ytms.util.EmailUtil;
 import jakarta.mail.MessagingException;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class IReferralServiceImpl implements IReferralService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IReferralServiceImpl.class);
+
     private static final Integer COINS_PER_REFERRAL = 10;
     @Autowired
     private YtmsUserRepository userRepository;

@@ -4,7 +4,10 @@ import com.yash.ytms.domain.LoginHistory;
 import com.yash.ytms.domain.YtmsUser;
 import com.yash.ytms.dto.DailyStreakDto;
 import com.yash.ytms.repository.YtmsUserRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IDailyStreakService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +30,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class IDailyStreakServiceImpl implements IDailyStreakService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IDailyStreakServiceImpl.class);
+
     @Autowired
     private YtmsUserRepository userRepository;
     @Override

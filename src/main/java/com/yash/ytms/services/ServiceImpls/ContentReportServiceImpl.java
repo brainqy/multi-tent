@@ -6,9 +6,12 @@ import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ContentReportRepository;
+import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ContentReportService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +34,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ContentReportServiceImpl implements ContentReportService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentReportServiceImpl.class);
+
     @Autowired
     private ContentReportRepository contentReportRepository;
     @Autowired
