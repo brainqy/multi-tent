@@ -7,7 +7,6 @@ import com.yash.ytms.dto.DailyStreakDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.security.jwt.JwtAuthRequest;
 import com.yash.ytms.security.jwt.JwtAuthResponse;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.security.jwt.JwtTokenHelper;
 import com.yash.ytms.security.userdetails.CustomUserDetails;
 import com.yash.ytms.security.userdetails.CustomUserDetailsServiceImpl;
@@ -35,8 +34,8 @@ import org.springframework.stereotype.Service;
  * @since - 25-01-2024
  */
 @Service
-public class AuthServiceImpl implements IAuthService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
+public class IAuthServiceImpl implements IAuthService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IAuthServiceImpl.class);
 
 
     @Autowired

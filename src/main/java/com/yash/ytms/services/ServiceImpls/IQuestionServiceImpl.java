@@ -3,7 +3,6 @@ package com.yash.ytms.services.ServiceImpls;
 import com.yash.ytms.domain.Question;
 import com.yash.ytms.dto.QuestionDto;
 import com.yash.ytms.repository.QuestionRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.QuestionService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -23,8 +22,8 @@ import java.util.stream.Collectors;
  * @since 26-04-2024
  */
 @Service
-public class QuestionServiceImpl implements QuestionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(QuestionServiceImpl.class);
+public class IQuestionServiceImpl implements QuestionService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IQuestionServiceImpl.class);
 
     @Autowired
     private  QuestionRepository questionRepository;

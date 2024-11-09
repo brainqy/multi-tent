@@ -2,7 +2,6 @@ package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.forum.ForumDto;
 import com.yash.ytms.dto.QuestionDto;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ForumService;
 import com.yash.ytms.services.IServices.QuestionService;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.parser.BeanOutputParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -27,17 +25,17 @@ import java.util.Map;
  * @since 24-04-2024
  */
 @Component
-public class ScheduledServiceImpl {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledServiceImpl.class);
+public class IScheduledServiceImpl {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IScheduledServiceImpl.class);
 
     @Autowired
     ForumService forumService;
     private final ChatClient chatClient;
     @Autowired
     QuestionService questionService;
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(IScheduledServiceImpl.class);
 
-    public ScheduledServiceImpl(ChatClient chatClient) {
+    public IScheduledServiceImpl(ChatClient chatClient) {
         this.chatClient = chatClient;
     }
     //@Scheduled(fixedRate = 30000)

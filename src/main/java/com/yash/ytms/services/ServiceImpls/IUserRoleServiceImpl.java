@@ -5,7 +5,6 @@ import com.yash.ytms.domain.UserRole;
 import com.yash.ytms.dto.UserRoleDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.UserRoleRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IUserRoleService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
  * @since - 25-01-2024
  */
 @Service
-public class UserRoleServiceImpl implements IUserRoleService {
+public class IUserRoleServiceImpl implements IUserRoleService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IUserRoleService.class);
 
     @Autowired

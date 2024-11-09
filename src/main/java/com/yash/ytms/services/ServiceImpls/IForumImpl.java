@@ -1,14 +1,10 @@
 package com.yash.ytms.services.ServiceImpls;
 
-import com.yash.ytms.domain.YtmsUser;
 import com.yash.ytms.domain.forum.Forum;
 import com.yash.ytms.domain.forum.ForumDto;
-import com.yash.ytms.domain.resume.Resume;
-import com.yash.ytms.domain.resume.ResumeDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ForumRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ForumService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -20,8 +16,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -39,8 +33,8 @@ import java.util.stream.Collectors;
  * @since 18-04-2024
  */
 @Service
-public class ForumImpl implements ForumService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ForumImpl.class);
+public class IForumImpl implements ForumService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IForumImpl.class);
 
     @Autowired
     private ForumRepository forumRepo;

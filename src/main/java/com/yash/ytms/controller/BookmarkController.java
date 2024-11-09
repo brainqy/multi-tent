@@ -3,7 +3,7 @@ package com.yash.ytms.controller;
 import com.yash.ytms.domain.Bookmark;
 import com.yash.ytms.domain.resume.ResumeDto;
 import com.yash.ytms.dto.ResponseWrapperDto;
-import com.yash.ytms.services.ServiceImpls.BookmarkServiceImpl;
+import com.yash.ytms.services.ServiceImpls.IBookmarkServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ import java.util.List;
 public class BookmarkController {
 
     @Autowired
-    private BookmarkServiceImpl bookmarkService;
+    private IBookmarkServiceImpl bookmarkService;
 
     @PostMapping("/add")
     public ResponseEntity<Void> addBookmark(@RequestParam Long postId, @RequestParam String articleId, Principal principal) {

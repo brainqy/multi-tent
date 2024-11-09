@@ -6,7 +6,6 @@ import com.yash.ytms.dto.BadgeDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.repository.BadgeRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.BadgeService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import jakarta.transaction.Transactional;
@@ -30,8 +29,8 @@ import java.util.stream.Collectors;
  * @since 14-09-2024
  */
 @Service
-public class BadgeServiceImpl implements BadgeService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BadgeServiceImpl.class);
+public class IBadgeServiceImpl implements BadgeService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IBadgeServiceImpl.class);
 
     @Autowired
     private BadgeRepository badgeRepository;

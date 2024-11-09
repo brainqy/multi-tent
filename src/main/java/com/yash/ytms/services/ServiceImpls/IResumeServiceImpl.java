@@ -1,13 +1,10 @@
 package com.yash.ytms.services.ServiceImpls;
 
-import com.yash.ytms.domain.atsscan.SectionDataWrapper;
-import com.yash.ytms.domain.atsscan.SectionDataWrapperDto;
 import com.yash.ytms.domain.resume.Experience;
 import com.yash.ytms.domain.resume.Qualification;
 import com.yash.ytms.domain.resume.Resume;
 import com.yash.ytms.domain.resume.ResumeDto;
 import com.yash.ytms.repository.ResumeRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ResumeService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -34,8 +31,8 @@ import java.util.stream.Collectors;
  * @since 22-09-2024
  */
 @Service
-public class ResumeServiceImpl implements ResumeService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResumeServiceImpl.class);
+public class IResumeServiceImpl implements ResumeService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IResumeServiceImpl.class);
 
     @Autowired
     private ResumeRepository resumeRepository;

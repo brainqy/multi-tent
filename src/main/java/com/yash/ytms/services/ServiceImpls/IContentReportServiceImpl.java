@@ -2,11 +2,8 @@ package com.yash.ytms.services.ServiceImpls;
 
 import com.yash.ytms.domain.ContentReport;
 import com.yash.ytms.dto.ContentReportDto;
-import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.dto.YtmsUserDto;
-import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ContentReportRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.ContentReportService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.modelmapper.ModelMapper;
@@ -33,8 +30,8 @@ import java.util.stream.Collectors;
  * @since 22-03-2024
  */
 @Service
-public class ContentReportServiceImpl implements ContentReportService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContentReportServiceImpl.class);
+public class IContentReportServiceImpl implements ContentReportService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IContentReportServiceImpl.class);
 
     @Autowired
     private ContentReportRepository contentReportRepository;

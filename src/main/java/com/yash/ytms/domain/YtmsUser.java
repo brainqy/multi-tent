@@ -1,6 +1,7 @@
 package com.yash.ytms.domain;
 
 import com.yash.ytms.constants.UserAccountStatusTypes;
+import com.yash.ytms.domain.resume.Secret;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,6 +64,10 @@ public class YtmsUser {
 
     @OneToMany(mappedBy = "referrer", cascade = CascadeType.ALL)
     private List<Referral> referrals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Secret> secrets = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "user_badge",

@@ -3,7 +3,6 @@ package com.yash.ytms.services.ServiceImpls;
 import com.yash.ytms.domain.Job;
 import com.yash.ytms.dto.ResponseWrapperDto;
 import com.yash.ytms.repository.JobRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.JobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +22,8 @@ import java.util.Optional;
  * @since 01-07-2024
  */
 @Service
-public class JobServiceImpl implements JobService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
+public class IJobServiceImpl implements JobService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IJobServiceImpl.class);
 
 
     @Autowired

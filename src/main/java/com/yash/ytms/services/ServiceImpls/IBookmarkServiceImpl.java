@@ -5,7 +5,6 @@ import com.yash.ytms.domain.YtmsUser;
 import com.yash.ytms.domain.resume.PostType;
 import com.yash.ytms.repository.BookmarkRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IBookmarkService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -27,8 +26,8 @@ import java.util.Optional;
  * @since 17-09-2024
  */
 @Service
-public class BookmarkServiceImpl implements IBookmarkService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkServiceImpl.class);
+public class IBookmarkServiceImpl implements IBookmarkService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IBookmarkServiceImpl.class);
 
     @Autowired
     private BookmarkRepository bookmarkRepository;

@@ -8,7 +8,6 @@ import com.yash.ytms.dto.ScheduleEventDto;
 import com.yash.ytms.dto.YtmsUserDto;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.ScheduleEventRepository;
-import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IScheduleEventService;
 import com.yash.ytms.services.IServices.IYtmsUserService;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ScheduleEventServiceImpl implements IScheduleEventService {
+public class IScheduleEventServiceImpl implements IScheduleEventService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IScheduleEventService.class);
 
     @Autowired
