@@ -4,6 +4,8 @@ import com.yash.ytms.domain.InterviewSlot;
 import com.yash.ytms.dto.InterviewPageDto;
 import com.yash.ytms.dto.InterviewSlotDto;
 import com.yash.ytms.dto.ResponseWrapperDto;
+import com.yash.ytms.dto.ScheduleEventDto;
+import com.yash.ytms.services.IServices.IScheduleEventService;
 import com.yash.ytms.services.IServices.InterviewSlotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,8 @@ import java.util.List;
 public class InterviewSlotController {
     @Autowired
     private InterviewSlotService interviewSlotService;
+    @Autowired
+    private IScheduleEventService eventService;
 
     @PostMapping
     public ResponseEntity<ResponseWrapperDto> saveInterviewSlot(@RequestBody InterviewSlotDto interviewSlot, Principal principal) {
@@ -63,5 +67,11 @@ public class InterviewSlotController {
         InterviewSlotDto canceledSlot = interviewSlotService.cancelInterviewSlot(id,principal);
         return ResponseEntity.ok(canceledSlot);
     }
+    @GetMapping("/get_available_slots")
+    public  ResponseEntity<List<ScheduleEventDto>> getAvailableInterviewSlots(){
+        List<ScheduleEventDto> allEvents = eventService.getAllScheduleEvents();
+        return  ResponseEntity.ok(allEvents);
+    }
+        
 
 }

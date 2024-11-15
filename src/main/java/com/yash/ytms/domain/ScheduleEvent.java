@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,6 +44,7 @@ public class ScheduleEvent {
 
     @Column(name = "color")
     private String color;
+    private List<String> skills;
 
     @ManyToOne
     @JoinColumn(name = "schedule_user")

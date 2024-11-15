@@ -5,6 +5,7 @@ import com.yash.ytms.dto.*;
 import com.yash.ytms.exception.ApplicationException;
 import com.yash.ytms.repository.CoinTransactionRepository;
 import com.yash.ytms.repository.InterviewSlotRepository;
+import com.yash.ytms.repository.ScheduleEventRepository;
 import com.yash.ytms.repository.YtmsUserRepository;
 import com.yash.ytms.security.jwt.JwtAuthenticationFilter;
 import com.yash.ytms.services.IServices.IYtmsUserService;
@@ -38,6 +39,8 @@ import static com.yash.ytms.constants.AppConstants.INTERVIEW_CHARGE;
 @Service
 public class InterviewSlotServiceImpl implements InterviewSlotService {
     private static final Logger LOGGER = LoggerFactory.getLogger(InterviewSlotServiceImpl.class);
+    @Autowired
+    private ScheduleEventRepository scheduleEventRepository;
 
     @Autowired
     private InterviewSlotRepository interviewSlotRepository;
@@ -180,5 +183,8 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
                 .collect(Collectors.toList());
         return  slotDtos;
 
+    }
+    void getAllAvailableInterviewSlots(){
+        List<ScheduleEvent> allevents = scheduleEventRepository.findAll();
     }
 }
