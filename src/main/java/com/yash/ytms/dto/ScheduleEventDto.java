@@ -22,6 +22,8 @@ public class ScheduleEventDto {
 
     private String color;
     private List<String> skills;
+    private String bookedBy;
+    private String status;
 
     private YtmsUserDto scheduleUser;
 }

@@ -46,6 +46,8 @@ public class ScheduleEvent {
     private String color;
     private List<String> skills;
 
+    private String bookedBy;
+    private String status;
     @ManyToOne
     @JoinColumn(name = "schedule_user")
     private YtmsUser scheduleUser;

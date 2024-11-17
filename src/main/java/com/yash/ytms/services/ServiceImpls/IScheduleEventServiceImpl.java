@@ -144,8 +144,8 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
             return responseWrapperDto;
         } else
             responseWrapperDto.setMessage("Event id is null or empty, please check & try again !");
-            return responseWrapperDto;
-            //throw new ApplicationException("Event id is null or empty, please check & try again !");
+        return responseWrapperDto;
+        //throw new ApplicationException("Event id is null or empty, please check & try again !");
     }
 
     @Override
@@ -156,20 +156,35 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
         if (ObjectUtils.isNotEmpty(eventId)) {
             ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
             Optional<ScheduleEvent> scheduleEventOptional = this.scheduleEventRepository.findById(eventId);
+
             if (scheduleEventOptional.isPresent()) {
                 ScheduleEvent scheduleEvent = scheduleEventOptional.get();
                 final String userName = principal.getName();
                 YtmsUserDto userDto = this.userService.getUserByEmailAdd(userName);
 
-                if (StringUtils.equals(scheduleEvent.getScheduleUser().getEmailAdd(),
-                        userDto.getEmailAdd())) {
-                    scheduleEvent.setTitle(scheduleEventDto.getTitle());
-                    scheduleEvent.setStart(scheduleEventDto.getStart());
-                    scheduleEvent.setEnd(scheduleEventDto.getEnd());
-                    scheduleEvent.setColor(scheduleEventDto.getColor());
+                if (StringUtils.equals(scheduleEvent.getScheduleUser().getEmailAdd(), userDto.getEmailAdd())) {
 
-                    //reassigning the object with updated value
+                    // Update only the fields that are not null in the scheduleEventDto
+                    if (scheduleEventDto.getTitle() != null) {
+                        scheduleEvent.setTitle(scheduleEventDto.getTitle());
+                    }
+                    if (scheduleEventDto.getStart() != null) {
+                        scheduleEvent.setStart(scheduleEventDto.getStart());
+                    }
+                    if (scheduleEventDto.getEnd() != null) {
+                        scheduleEvent.setEnd(scheduleEventDto.getEnd());
+                    }
+                    if (scheduleEventDto.getColor() != null) {
+                        scheduleEvent.setColor(scheduleEventDto.getColor());
+                    }
+                    if (scheduleEventDto.getStatus() != null) {
+                        scheduleEvent.setStatus(scheduleEventDto.getStatus());
+                    }
+
+                    // Save the partially updated event
                     scheduleEvent = this.scheduleEventRepository.save(scheduleEvent);
+
+                    // Convert the updated entity back to DTO
                     scheduleEventDto = this.modelMapper.map(scheduleEvent, ScheduleEventDto.class);
                     scheduleEventDto.setScheduleUser(userDto);
 
@@ -187,7 +202,8 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
             }
             responseWrapperDto.setData(null);
             return responseWrapperDto;
-        } else
+        } else {
             throw new ApplicationException("Event id is null or empty, please check & try again !");
+        }
     }
 }

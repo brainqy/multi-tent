@@ -62,8 +62,7 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
         final String userName = principal.getName();
         Optional<YtmsUserDto> userDto = Optional.ofNullable(this.userService.getUserByEmailAdd(userName));
              YtmsUser ytmsUser = modelMapper.map(userDto, YtmsUser.class);
-        if (interviewSlotDto.getHrName() != null) {
-
+        if (interviewSlotDto.getHrEmail() != null &&interviewSlotDto.getJobId()!=0) {
             Optional<Job> jobOptional = Optional.ofNullable(this.jobService.findById(interviewSlotDto.getJobId()));
             InterviewSlot interviewSlot =modelMapper.map(interviewSlotDto,InterviewSlot.class);
             interviewSlot.setJob(jobOptional.get());
@@ -73,7 +72,7 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
             wrapperDto.setStatus("SUCCESS");
             wrapperDto.setData(interviewSlotDto);
         }
-        if(interviewSlotDto.getHrName()==null){
+        if(interviewSlotDto.getInterviewType()!=null){
             int remainingCoinBalance = ytmsUser.getCoins() - INTERVIEW_CHARGE;
             if (remainingCoinBalance>0){
                 InterviewSlot interviewSlot =modelMapper.map(interviewSlotDto,InterviewSlot.class);
