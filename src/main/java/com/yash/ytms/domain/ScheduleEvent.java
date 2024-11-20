@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,12 +45,18 @@ public class ScheduleEvent {
 
     @Column(name = "color")
     private String color;
+
     private List<String> skills;
 
     private String bookedBy;
+
     private String status;
+
     @ManyToOne
     @JoinColumn(name = "schedule_user")
+    @JsonManagedReference // Prevent infinite recursion
     private YtmsUser scheduleUser;
 
+    // Getters and setters
 }
+

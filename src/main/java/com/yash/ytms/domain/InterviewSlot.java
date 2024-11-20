@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class InterviewSlot {
     private String status;
     @ManyToOne
     @JoinColumn(name = "createdBy")
+    @JsonManagedReference
     private YtmsUser scheduleUser;
     private String meetingLink;
     private String hrName;
