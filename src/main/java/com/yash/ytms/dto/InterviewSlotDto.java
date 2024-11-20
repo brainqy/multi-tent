@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  * Description of the class or file.
@@ -24,7 +25,8 @@ public class InterviewSlotDto {
     private String day;
     private String slot;
     private String interviewType;
-    private String kindOfInterviewType;
+    private List<String> kindOfInterviewType;
+    private List<String> selectedKindOfInterviewType;
     private String status;
     private String meetingLink;
     private String hrName;

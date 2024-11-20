@@ -177,6 +177,9 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
                     if (scheduleEventDto.getColor() != null) {
                         scheduleEvent.setColor(scheduleEventDto.getColor());
                     }
+                    if (scheduleEventDto.getBookedBy() != null) {
+                        scheduleEvent.setBookedBy(scheduleEventDto.getBookedBy());
+                    }
                     if (scheduleEventDto.getStatus() != null) {
                         scheduleEvent.setStatus(scheduleEventDto.getStatus());
                     }

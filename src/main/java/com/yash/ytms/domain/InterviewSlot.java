@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  * Description of the class or file.
@@ -31,7 +32,8 @@ public class InterviewSlot {
     private String slot;
     @NotNull
     private String interviewType;
-    private String kindOfInterviewType;
+    @ElementCollection
+    private List<String> kindOfInterviewType;
     private String status;
     @ManyToOne
     @JoinColumn(name = "createdBy")
