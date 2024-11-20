@@ -55,7 +55,6 @@ public class YtmsUserDto {
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
-    private List<Badge> earnedBadges;
     private int xpPoints;
     private int tasksCompleted;
     private int coursesCompleted;

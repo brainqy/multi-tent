@@ -1,5 +1,6 @@
 package com.yash.ytms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yash.ytms.constants.BadgeRule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,5 +33,6 @@ public class Badge {
     private BadgeRule rule;  // Enum for badge rules
     private int threshold;
     @ManyToMany(mappedBy = "earnedBadges") // Bidirectional relationship with YtmsUser
+    @JsonIgnore // Prevent circular reference during serialization
     private List<YtmsUser> users;
 }
