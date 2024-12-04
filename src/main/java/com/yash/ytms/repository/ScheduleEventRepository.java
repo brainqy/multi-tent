@@ -19,4 +19,8 @@ public interface ScheduleEventRepository extends JpaRepository<ScheduleEvent, In
     @Query("delete from ScheduleEvent se where se.eventId = :eventId and se.scheduleUser.emailAdd=:userEmail")
     Integer deleteScheduleEventByEventId(@Param("eventId") Integer eventId,
                                          @Param("userEmail") String userEmail);
+
+    @Query("select e from ScheduleEvent e where e.scheduleUser.emailAdd <> :loggedUserEmail")
+    List<ScheduleEvent> getAllAppointmentsExceptLoggedUser(@Param("loggedUserEmail") String loggedUserEmail);
+
 }

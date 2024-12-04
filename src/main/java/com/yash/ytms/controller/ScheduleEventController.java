@@ -34,6 +34,18 @@ public class ScheduleEventController {
         return new ResponseEntity<>(scheduleEvents, HttpStatus.OK);
     }
 
+    @GetMapping("/loggedInUser-events")
+    public ResponseEntity<List<ScheduleEventDto>> getAllScheduleEventsForLoggedInUser(Principal principal) {
+        List<ScheduleEventDto> scheduleEvents = this.scheduleEventService.getAllScheduleEventsForLoggedInUser(principal);
+        return new ResponseEntity<>(scheduleEvents, HttpStatus.OK);
+    }
+
+    @GetMapping("/available-appointments")
+    public ResponseEntity<List<ScheduleEventDto>> getAllScheduledAppointmentsExceptLoggedUser(Principal principal) {
+        List<ScheduleEventDto> scheduleEvents = this.scheduleEventService.getAllScheduleEventsExceptLoggedUser(principal);
+        return new ResponseEntity<>(scheduleEvents, HttpStatus.OK);
+    }
+
 
     @GetMapping("/get/{eventId}")
     public ResponseEntity<ScheduleEventDto> getScheduleEventById(@PathVariable Integer eventId) {

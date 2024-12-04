@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class IScheduleEventServiceImpl implements IScheduleEventService {
@@ -162,6 +163,7 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
                 final String userName = principal.getName();
                 YtmsUserDto userDto = this.userService.getUserByEmailAdd(userName);
 
+                // Allow the original creator to update all fields
                 if (StringUtils.equals(scheduleEvent.getScheduleUser().getEmailAdd(), userDto.getEmailAdd())) {
 
                     // Update only the fields that are not null in the scheduleEventDto
@@ -184,29 +186,76 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
                         scheduleEvent.setStatus(scheduleEventDto.getStatus());
                     }
 
-                    // Save the partially updated event
-                    scheduleEvent = this.scheduleEventRepository.save(scheduleEvent);
-
-                    // Convert the updated entity back to DTO
-                    scheduleEventDto = this.modelMapper.map(scheduleEvent, ScheduleEventDto.class);
-                    scheduleEventDto.setScheduleUser(userDto);
-
-                    responseWrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
-                    responseWrapperDto.setMessage("Event updated successfully");
-                    responseWrapperDto.setData(scheduleEventDto);
-                    return responseWrapperDto;
                 } else {
-                    responseWrapperDto.setStatus(RequestStatusTypes.UNAUTHORIZED.toString());
-                    responseWrapperDto.setMessage("Not Authorized to update this event");
+                    // Allow other users to update only the 'status' field
+                    if (scheduleEventDto.getStatus() != null) {
+                        scheduleEvent.setStatus(scheduleEventDto.getStatus());
+                    } else {
+                        responseWrapperDto.setStatus(RequestStatusTypes.UNAUTHORIZED.toString());
+                        responseWrapperDto.setMessage("Not authorized to update fields other than status");
+                        responseWrapperDto.setData(null);
+                        return responseWrapperDto;
+                    }
                 }
+
+                // Save the updated event
+                scheduleEvent = this.scheduleEventRepository.save(scheduleEvent);
+
+                // Convert the updated entity back to DTO
+                scheduleEventDto = this.modelMapper.map(scheduleEvent, ScheduleEventDto.class);
+                scheduleEventDto.setScheduleUser(userDto);
+
+                responseWrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
+                responseWrapperDto.setMessage("Event updated successfully");
+                responseWrapperDto.setData(scheduleEventDto);
+                return responseWrapperDto;
             } else {
                 responseWrapperDto.setStatus(RequestStatusTypes.NOT_FOUND.toString());
                 responseWrapperDto.setMessage("Event not found with the provided id");
+                responseWrapperDto.setData(null);
+                return responseWrapperDto;
             }
-            responseWrapperDto.setData(null);
-            return responseWrapperDto;
         } else {
-            throw new ApplicationException("Event id is null or empty, please check & try again !");
+            throw new ApplicationException("Event id is null or empty, please check & try again!");
+        }
+    }
+
+
+    @Override
+    public List<ScheduleEventDto> getAllScheduleEventsExceptLoggedUser(Principal principal) {
+        String loggedInUserEmail=principal.getName();
+        List<ScheduleEvent> scheduleEvents = scheduleEventRepository.getAllAppointmentsExceptLoggedUser(loggedInUserEmail);
+        if (!scheduleEvents.isEmpty()) {
+            return scheduleEvents
+                    .stream()
+                    .map(se -> this
+                            .modelMapper
+                            .map(se, ScheduleEventDto.class))
+                    .toList();
+        } else
+            return List.of();
+    }
+
+    @Override
+    public List<ScheduleEventDto> getAllScheduleEventsForLoggedInUser(Principal principal) {
+        String trainerEmail = principal.getName();
+
+        // Ensure the trainer email is not empty or null
+        if (StringUtils.isNotEmpty(trainerEmail)) {
+            // Fetch events for the trainer
+            List<ScheduleEvent> scheduleEvents = this.scheduleEventRepository.findAllEventsByTrainerEmail(trainerEmail);
+
+            // Check if events are found
+            if (scheduleEvents.isEmpty()) {
+                throw new ApplicationException("No Events Found for this trainer");
+            } else {
+                // Map the ScheduleEvent entities to ScheduleEventDto objects
+                return scheduleEvents.stream()
+                        .map(e -> this.modelMapper.map(e, ScheduleEventDto.class))
+                        .collect(Collectors.toList());
+            }
+        } else {
+            throw new ApplicationException("Trainer email is empty or null, please check & try again.");
         }
     }
 }

@@ -20,4 +20,8 @@ public interface IScheduleEventService {
     ResponseWrapperDto deleteScheduleEventById(Integer eventId, Principal principal);
 
     ResponseWrapperDto updateScheduleEvent(Integer eventId, ScheduleEventDto scheduleEventDto, Principal principal);
+
+    List<ScheduleEventDto> getAllScheduleEventsExceptLoggedUser(Principal principal);
+
+    List<ScheduleEventDto> getAllScheduleEventsForLoggedInUser(Principal principal);
 }
