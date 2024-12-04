@@ -32,6 +32,7 @@ public class Forum {
     @Column(length = 10000)
     @NotNull
     private String forum_body;
+    private String type;
     private String createdBy;
     private boolean bookmarked;
     private LocalDateTime createdAt;
