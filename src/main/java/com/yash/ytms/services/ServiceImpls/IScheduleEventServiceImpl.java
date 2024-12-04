@@ -245,17 +245,13 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
             // Fetch events for the trainer
             List<ScheduleEvent> scheduleEvents = this.scheduleEventRepository.findAllEventsByTrainerEmail(trainerEmail);
 
-            // Check if events are found
-            if (scheduleEvents.isEmpty()) {
-                throw new ApplicationException("No Events Found for this trainer");
-            } else {
-                // Map the ScheduleEvent entities to ScheduleEventDto objects
-                return scheduleEvents.stream()
-                        .map(e -> this.modelMapper.map(e, ScheduleEventDto.class))
-                        .collect(Collectors.toList());
-            }
+            // Map the ScheduleEvent entities to ScheduleEventDto objects (or return an empty list if none are found)
+            return scheduleEvents.stream()
+                    .map(e -> this.modelMapper.map(e, ScheduleEventDto.class))
+                    .collect(Collectors.toList());
         } else {
-            throw new ApplicationException("Trainer email is empty or null, please check & try again.");
+            throw new ApplicationException("Logged in user email is empty or null, please check & try again.");
         }
     }
+
 }
