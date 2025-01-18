@@ -93,7 +93,7 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
                 wrapperDto.setStatus("SUCCESS");
                 wrapperDto.setData(interviewSlotDto);
             }else {
-                wrapperDto.setStatus("COin Balance is not enough for Interview slot creation");
+                wrapperDto.setStatus("Coin Balance is not enough for Interview slot creation");
                 wrapperDto.setStatus("FAILED");
             }
         }
@@ -110,6 +110,22 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
         Optional<YtmsUser> user = userRepository.getUserByEmail(userEmail);
         Integer userCoinBalance = user.get().getCoins();
         List<InterviewSlot> slots = interviewSlotRepository.getByEmail(userEmail);
+        // Map each InterviewSlot entity to InterviewSlotDto
+        List<InterviewSlotDto> slotDtos = slots.stream()
+                .map(slot -> modelMapper.map(slot, InterviewSlotDto.class))
+                .collect(Collectors.toList());
+        pageDto.setCoinBalance(userCoinBalance);
+        pageDto.setData(slotDtos);
+        return pageDto;
+    }
+
+    @Override
+    public InterviewPageDto getAllInterviewSlotsExceptLoggedInUser(Principal principal) {
+        String userEmail= principal.getName();
+        InterviewPageDto pageDto= new InterviewPageDto();
+        Optional<YtmsUser> user = userRepository.getUserByEmail(userEmail);
+        Integer userCoinBalance = user.get().getCoins();
+        List<InterviewSlot> slots = interviewSlotRepository.getAllInterviewSlotsExceptLoggedUser(userEmail);
         // Map each InterviewSlot entity to InterviewSlotDto
         List<InterviewSlotDto> slotDtos = slots.stream()
                 .map(slot -> modelMapper.map(slot, InterviewSlotDto.class))
@@ -186,4 +202,6 @@ public class InterviewSlotServiceImpl implements InterviewSlotService {
     void getAllAvailableInterviewSlots(){
         List<ScheduleEvent> allevents = scheduleEventRepository.findAll();
     }
+
+
 }

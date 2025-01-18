@@ -2,6 +2,7 @@ package com.yash.ytms.repository;
 
 import com.yash.ytms.domain.InterviewSlot;
 import com.yash.ytms.domain.Job;
+import com.yash.ytms.domain.ScheduleEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +24,7 @@ public interface InterviewSlotRepository extends JpaRepository<InterviewSlot, Lo
     List<InterviewSlot> getAllInterviewsyJobId(@Param("job")Job job,@Param("userEmail") String userEmail);
     @Query("SELECT r FROM InterviewSlot r WHERE r.scheduleUser.emailAdd=:userEmail")
     List<InterviewSlot> getByEmail(String userEmail);
+    @Query("select r from InterviewSlot r where r.scheduleUser.emailAdd <> :loggedUserEmail")
+    List<InterviewSlot> getAllInterviewSlotsExceptLoggedUser(@Param("loggedUserEmail") String loggedUserEmail);
+
 }

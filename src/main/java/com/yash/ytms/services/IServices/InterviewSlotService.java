@@ -18,6 +18,7 @@ import java.util.List;
 public interface InterviewSlotService {
     ResponseWrapperDto saveInterviewSlot(InterviewSlotDto interviewSlot, Principal principal);
     InterviewPageDto getAllInterviewSlots(Principal principal);
+    InterviewPageDto getAllInterviewSlotsExceptLoggedInUser(Principal principal);
     InterviewSlotDto updateInterviewSlot(Long id ,InterviewSlotDto interviewSlotDto);
     InterviewSlotDto cancelInterviewSlot(Long id,Principal principal);
 

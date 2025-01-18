@@ -45,6 +45,15 @@ public class InterviewSlotController {
         responseWrapperDto.setStatus("SUCCESS");
         responseWrapperDto.setMessage("Data retrieved successfully");
         return  new ResponseEntity(responseWrapperDto, HttpStatus.OK);
+    }
+    @GetMapping("/interview-slots-except-loggedIn")
+    public  ResponseEntity getAllInterviewSlotsExceptLoggedInUser(Principal principal) {
+        ResponseWrapperDto responseWrapperDto= new ResponseWrapperDto();
+        InterviewPageDto allInterviewSlots = interviewSlotService.getAllInterviewSlotsExceptLoggedInUser(principal);
+        responseWrapperDto.setData(allInterviewSlots);
+        responseWrapperDto.setStatus("SUCCESS");
+        responseWrapperDto.setMessage("Data retrieved successfully");
+        return  new ResponseEntity(responseWrapperDto, HttpStatus.OK);
 
     }
     @GetMapping("/jobId/{jobId}")
