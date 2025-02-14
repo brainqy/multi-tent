@@ -1,0 +1,30 @@
+package com.brainqy.api.domain.forum;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+/**
+ * Description of the class or file.
+ *
+ * @author Dnyaneshwar Somwanshi
+ * @version 1.0
+ * @project multi-tent
+ * @since 18-04-2024
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+
+public class ForumDto {
+    private long forum_id;
+    private String forum_title;
+    private String forum_body;
+    private String type;
+    private boolean bookmarked;
+    private String createdBy;
+    private String createdAt;
+    private List<String> tags;
+}

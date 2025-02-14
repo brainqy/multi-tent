@@ -1,0 +1,88 @@
+package com.brainqy.api.controller;
+
+import com.brainqy.api.dto.ResponseWrapperDto;
+import com.brainqy.api.dto.ScheduleEventDto;
+import com.brainqy.api.services.IServices.IReferralService;
+import com.brainqy.api.services.IServices.IScheduleEventService;
+import com.brainqy.api.services.IServices.IYtmsUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
+
+@RestController
+@RequestMapping("/calendar/events")
+public class ScheduleEventController {
+
+    @Autowired
+    private IScheduleEventService scheduleEventService;
+    @Autowired
+    IReferralService referralService;
+    @Autowired
+    IYtmsUserService userService;
+
+    @GetMapping("/get/all")
+    public ResponseEntity<List<ScheduleEventDto>> getAllScheduleEvents() {
+        List<ScheduleEventDto> scheduleEvents = this.scheduleEventService.getAllScheduleEvents();
+        return new ResponseEntity<>(scheduleEvents, HttpStatus.OK);
+    }
+
+    @GetMapping("/loggedInUser-events")
+    public ResponseEntity<List<ScheduleEventDto>> getAllScheduleEventsForLoggedInUser(Principal principal) {
+        List<ScheduleEventDto> scheduleEvents = this.scheduleEventService.getAllScheduleEventsForLoggedInUser(principal);
+        return new ResponseEntity<>(scheduleEvents, HttpStatus.OK);
+    }
+
+    @GetMapping("/available-appointments")
+    public ResponseEntity<List<ScheduleEventDto>> getAllScheduledAppointmentsExceptLoggedUser(Principal principal) {
+        List<ScheduleEventDto> scheduleEvents = this.scheduleEventService.getAllScheduleEventsExceptLoggedUser(principal);
+        return new ResponseEntity<>(scheduleEvents, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/get/{eventId}")
+    public ResponseEntity<ScheduleEventDto> getScheduleEventById(@PathVariable Integer eventId) {
+        ScheduleEventDto scheduleEvent = this.scheduleEventService.getScheduleEventById(eventId);
+        return new ResponseEntity<>(scheduleEvent, HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ScheduleEventDto> createScheduleEvent(@RequestBody ScheduleEventDto scheduleEventDto,
+                                                                Principal principal) {
+        ScheduleEventDto scheduleEvent = this.scheduleEventService.createScheduleEvent(scheduleEventDto, principal);
+        return new ResponseEntity<>(scheduleEvent, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/{eventId}")
+    public ResponseEntity<ResponseWrapperDto> deleteScheduleEventById(@PathVariable Integer eventId,
+                                                                      Principal principal) {
+        ResponseWrapperDto responseWrapperDto = this.scheduleEventService.deleteScheduleEventById(eventId, principal);
+        return new ResponseEntity<>(responseWrapperDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{eventId}")
+    public ResponseEntity<ResponseWrapperDto> updateScheduleEvent(@PathVariable Integer eventId,
+                                                                  @RequestBody ScheduleEventDto scheduleEventDto,
+                                                                  Principal principal) {
+        ResponseWrapperDto responseWrapperDto = this.scheduleEventService.updateScheduleEvent(eventId, scheduleEventDto, principal);
+        return new ResponseEntity<>(responseWrapperDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/trainer-calendar")
+    public ResponseEntity<ResponseWrapperDto> searchByTrainerEmail(@RequestParam("email") String trainerEmail) {
+
+        ResponseWrapperDto events = scheduleEventService.searchByTrainer(trainerEmail);
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @PatchMapping("/update/{eventId}")
+    public ResponseEntity<ResponseWrapperDto> updateSApppointmentEvent(@PathVariable Integer eventId,
+                                                                  @RequestBody ScheduleEventDto scheduleEventDto,
+                                                                  Principal principal) {
+        ResponseWrapperDto responseWrapperDto = this.scheduleEventService.updateScheduleEvent(eventId, scheduleEventDto, principal);
+        return new ResponseEntity<>(responseWrapperDto, HttpStatus.OK);
+    }
+}

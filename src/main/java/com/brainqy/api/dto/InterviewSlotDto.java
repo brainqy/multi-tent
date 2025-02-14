@@ -1,0 +1,34 @@
+package com.brainqy.api.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+/**
+ * Description of the class or file.
+ *
+ * @author Dnyaneshwar Somwanshi
+ * @version 1.0
+ * @project multi-tent
+ * @since 10-04-2024
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class InterviewSlotDto {
+    private int id;
+    private String day;
+    private String slot;
+    private String interviewType;
+    private List<String> kindOfInterviewType;
+    private List<String> selectedKindOfInterviewType;
+    private String status;
+    private String meetingLink;
+    private String hrName;
+    private String mobileNumber;
+    private  String description;
+    private String hrEmail;
+    private long jobId;
+}

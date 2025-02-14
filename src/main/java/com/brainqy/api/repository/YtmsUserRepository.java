@@ -1,0 +1,46 @@
+package com.brainqy.api.repository;
+
+import com.brainqy.api.domain.YtmsUser;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Project Name - ytms-api
+ * <p>
+ * IDE Used - IntelliJ IDEA
+ *
+ * @author - yash.raj
+ * @since - 25-01-2024
+ */
+@Repository
+public interface YtmsUserRepository extends JpaRepository<YtmsUser, Long> {
+
+    @Query("SELECT yur FROM YtmsUser yur WHERE yur.emailAdd = :newEmail")
+    Optional<YtmsUser> getUserByEmail(@Param("newEmail") String newEmail);
+
+    @Query("select yur from YtmsUser yur where yur.accountStatus=com.brainqy.api.constants.UserAccountStatusTypes.PENDING")
+    List<YtmsUser> getAllPendingUsers();
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("update YtmsUser yur set yur.accountStatus=com.brainqy.api.constants.UserAccountStatusTypes.APPROVED where yur.emailAdd=?1")
+    Integer approvePendingUser(String emailAdd);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("update YtmsUser yur set yur.accountStatus=com.brainqy.api.constants.UserAccountStatusTypes.DECLINED where yur.emailAdd=?1")
+    Integer declinePendingUser(String emailAdd);
+
+    @Query("select yur from YtmsUser yur where yur.userRole.roleTypes='ROLE_TRAINER'")
+    List<YtmsUser> findAllTrainers();
+    @Query("select yur from YtmsUser yur")
+
+    List<YtmsUser> getAllUsers();
+}
