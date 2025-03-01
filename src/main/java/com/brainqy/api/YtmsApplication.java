@@ -1,6 +1,8 @@
 package com.brainqy.api;
 
 import com.brainqy.api.repository.OrganizationRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +19,7 @@ public class YtmsApplication  implements CommandLineRunner {
     private ModelMapper mapper;
     @Autowired
     private OrganizationRepository organizationRepository;
+    private static final Logger logger = LogManager.getLogger(YtmsApplication.class);
     public static void main(String[] args) {
         SpringApplication.run(YtmsApplication.class, args);
     }
@@ -30,5 +33,8 @@ public class YtmsApplication  implements CommandLineRunner {
         orgDto.setOrgCode("BRAINQY");
         Organization organization = this.mapper.map(orgDto, Organization.class);
         organizationRepository.save(organization);*/
+        logger.info("Application started...");
+        logger.warn("This is a warning.");
+        logger.error("An error occurred!");
     }
 }
