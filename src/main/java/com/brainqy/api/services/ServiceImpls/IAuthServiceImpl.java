@@ -52,6 +52,21 @@ public class IAuthServiceImpl implements IAuthService {
 
     @Autowired
     private CustomUserDetailsServiceImpl userDetailsService;
+    void authenticate(String userName, String password) {
+        lOGGER.info("Authenticating user: {}", userName);
+
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(userName, password);
+
+        try {
+            this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+            lOGGER.info("Authentication successful for user: {}", userName);
+        } catch (BadCredentialsException credentialsException) {
+            lOGGER.error("Invalid credentials for user: {}", userName);
+            throw new ApplicationException("Invalid username or password");
+        }
+    }
+
     @Override
     public JwtAuthResponse login(JwtAuthRequest authRequest) {
         String userName = authRequest.getEmail();
@@ -64,7 +79,9 @@ public class IAuthServiceImpl implements IAuthService {
         lOGGER.info("User {} authenticated successfully", userName);
 
         CustomUserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-        Assert.notNull(userDetails);
+        if (userDetails == null) {
+            throw new ApplicationException("Invalid username or password");
+        }
         lOGGER.info("Loaded user details for: {}", userName);
 
         JwtAuthResponse authResponse = new JwtAuthResponse();
@@ -114,20 +131,4 @@ public class IAuthServiceImpl implements IAuthService {
 
         return authResponse;
     }
-
-    private void authenticate(String userName, String password) {
-        lOGGER.info("Authenticating user: {}", userName);
-
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(userName, password);
-
-        try {
-            this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-            lOGGER.info("Authentication successful for user: {}", userName);
-        } catch (BadCredentialsException credentialsException) {
-            lOGGER.error("Invalid credentials for user: {}", userName);
-            throw new ApplicationException("Invalid username or password");
-        }
-    }
-
 }

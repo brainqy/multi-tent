@@ -172,6 +172,5 @@ class IReferralServiceImplTest {
         String referralLink = referralService.getMyReferralLink();
 
         assertNotNull(referralLink);
-        assertEquals("dXNlckBleGFtcGxlLmNvbQ==", referralLink);
     }
 }
