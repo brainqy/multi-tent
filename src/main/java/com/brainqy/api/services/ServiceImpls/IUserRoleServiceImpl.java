@@ -21,16 +21,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Project Name - ytms-api
+ * Project Name - brainqy-api
  * <p>
  * IDE Used - IntelliJ IDEA
  *
- * @author - yash.raj
+ * @author - Dnyaneshwar Somwanshi
  * @since - 25-01-2024
  */
 @Service
 public class IUserRoleServiceImpl implements IUserRoleService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IUserRoleService.class);
+    private static final Logger lOGGER = LoggerFactory.getLogger(IUserRoleServiceImpl.class);
 
     @Autowired
     private ModelMapper modelMapper;
@@ -55,6 +55,7 @@ public class IUserRoleServiceImpl implements IUserRoleService {
                     .modelMapper
                     .map(userRole, UserRoleDto.class);
         } else {
+            lOGGER.info("User Role Details are empty or null");
             throw new ApplicationException("User Role Details are empty or null");
         }
 
@@ -76,9 +77,11 @@ public class IUserRoleServiceImpl implements IUserRoleService {
                         .modelMapper
                         .map(userRole, UserRoleDto.class);
             } else {
+                lOGGER.info("User Role not found with the provided Id");
                 throw new ApplicationException("User Role not found with the provided Id");
             }
         } else {
+            lOGGER.info("User Role Id is empty or null");
             throw new ApplicationException("User Role Id is empty or null");
         }
 
@@ -100,9 +103,11 @@ public class IUserRoleServiceImpl implements IUserRoleService {
                         .modelMapper
                         .map(userRole, UserRoleDto.class);
             } else {
+                lOGGER.info("User Role not found with the provided role name");
                 throw new ApplicationException("User Role not found with the provided role name");
             }
         } else {
+            lOGGER.info("User Role name is empty or null");
             throw new ApplicationException("User Role name is empty or null");
         }
 

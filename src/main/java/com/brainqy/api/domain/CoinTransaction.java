@@ -13,7 +13,7 @@ import java.util.Date;
  *
  * @author Dnyaneshwar Somwanshi
  * @version 1.0
- * @project ytms-api
+ * @project brainqy-api
  * @since 12-02-2024
  */
 @Getter

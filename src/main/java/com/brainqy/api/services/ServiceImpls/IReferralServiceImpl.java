@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author Dnyaneshwar Somwanshi
  * @version 1.0
- * @project ytms-api
+ * @project brainqy-api
  * @since 14-02-2024
  */
 @Service

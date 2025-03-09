@@ -21,39 +21,56 @@ import java.util.stream.Collectors;
  * @project multi-tent
  * @since 26-04-2024
  */
+import com.brainqy.api.domain.Question;
+import com.brainqy.api.dto.QuestionDto;
+import com.brainqy.api.repository.QuestionRepository;
+import com.brainqy.api.services.IServices.QuestionService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class IQuestionServiceImpl implements QuestionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IQuestionServiceImpl.class);
 
     @Autowired
     private QuestionRepository questionRepository;
+
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
+
     @Override
     public QuestionDto createQuestion(QuestionDto questionDto) {
-        Question question=modelMapper.map(questionDto, Question.class);
+        Question question = modelMapper.map(questionDto, Question.class);
         questionRepository.save(question);
-        return modelMapper.map(question,QuestionDto.class);
+        return modelMapper.map(question, QuestionDto.class);
     }
 
     @Override
     public QuestionDto updateQuestion(QuestionDto questionDto, long questionId) {
-        return null;
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(NoSuchElementException::new);
+        modelMapper.map(questionDto, question);
+        questionRepository.save(question);
+        return modelMapper.map(question, QuestionDto.class);
     }
 
     @Override
     public void deleteQuestion(long questionId) {
-
+        if (!questionRepository.existsById(questionId)) {
+            throw new NoSuchElementException();
+        }
+        questionRepository.deleteById(questionId);
     }
 
     @Override
     public List<QuestionDto> getALlQuestions() {
-       List<Question> questions= questionRepository.findAll();
-        List<QuestionDto> questionDtos = questions.stream().map(que -> {
-            return modelMapper.map(que, QuestionDto.class);
-
-        }).collect(Collectors.toList());
-
-        return questionDtos;
+        List<Question> questions = questionRepository.findAll();
+        return questions.stream()
+                .map(question -> modelMapper.map(question, QuestionDto.class))
+                .collect(Collectors.toList());
     }
 }

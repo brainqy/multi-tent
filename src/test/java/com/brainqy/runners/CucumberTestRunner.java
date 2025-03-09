@@ -1,4 +1,4 @@
-package com.brainqy.api;
+package com.brainqy.runners;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "src/test/resources/features",
-        glue = "com.brainqy.steps",
+        glue = {"com.brainqy.steps","com.brainqy.hooks"},
         plugin = {"pretty", "html:target/cucumber-reports.html"}
 )
 public class CucumberTestRunner {

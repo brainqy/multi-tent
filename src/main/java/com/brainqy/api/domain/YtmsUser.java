@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Project Name - ytms-api
+ * Project Name - brainqy-api
  * <p>
  * IDE Used - IntelliJ IDEA
  *
- * @author - yash.raj
+ * @author - Dnyaneshwar Somwanshi
  * @since - 25-01-2024
  */
 @Getter

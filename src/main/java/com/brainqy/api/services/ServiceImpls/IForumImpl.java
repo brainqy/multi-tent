@@ -1,5 +1,6 @@
 package com.brainqy.api.services.ServiceImpls;
 
+import com.brainqy.api.domain.YtmsUser;
 import com.brainqy.api.domain.forum.Forum;
 import com.brainqy.api.domain.forum.ForumDto;
 import com.brainqy.api.exception.ApplicationException;
@@ -102,9 +103,13 @@ public class IForumImpl implements ForumService {
 
         // Update createdBy to full name
         forums.forEach(forumDto -> {
-            String fullName = userRepository.getUserByEmail(forumDto.getCreatedBy()).get() .getFullName();
-
-            forumDto.setCreatedBy(fullName);
+            Optional<YtmsUser> userOptional = userRepository.getUserByEmail(forumDto.getCreatedBy());
+            if (userOptional.isPresent()) {
+                String fullName = userOptional.get().getFullName();
+                forumDto.setCreatedBy(fullName);
+            } else {
+                forumDto.setCreatedBy("Unknown User");
+            }
         });
 
         return forums;

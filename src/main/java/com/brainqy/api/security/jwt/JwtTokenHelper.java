@@ -4,10 +4,14 @@ import com.brainqy.api.security.userdetails.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +30,13 @@ public class JwtTokenHelper {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-    private final String secret = "secret";
+    //private final String secret = "secret";
+    Key key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS512);
+    String secret = Encoders.BASE64.encode(key.getEncoded());
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 
     public String getUserNameFromToken(String token) {
         return getClaimFromToken(token, Claims :: getSubject);
@@ -47,8 +57,9 @@ public class JwtTokenHelper {
     }
 
     protected Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // ✅ Use secure signing key
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -71,8 +82,8 @@ public class JwtTokenHelper {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 100))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512) // ✅ Use secure signing key
                 .compact();
     }
 

@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,64 +39,20 @@ public class IResumeServiceImpl implements ResumeService {
     private ResumeRepository resumeRepository;
     @Autowired
     private ModelMapper modelMapper;
+
     @Override
     @Transactional
     @CachePut(value = "resumeCache", key = "#resume.getId()")
-    public Resume saveResume(ResumeDto resumeDTO, Principal principal) {
-        String userEmail=principal.getName();
-        // Convert ResumeDTO to Resume entity
-        Resume resume = new Resume();
-        resume.setCreatedBy(userEmail);
-        resume.setApplicantName(resumeDTO.getApplicantName());
-        resume.setEmail(resumeDTO.getEmail());
-        resume.setPhone(resumeDTO.getPhone());
-        resume.setAddress(resumeDTO.getAddress());
-        resume.setCity(resumeDTO.getCity());
-        resume.setState(resumeDTO.getState());
-        resume.setCountry(resumeDTO.getCountry());
-        resume.setPostalCode(resumeDTO.getPostalCode());
-        resume.setDateOfBirth(resumeDTO.getDateOfBirth());
-
-        resume.setCertifications(resumeDTO.getCertifications());
-        resume.setAchievements(resumeDTO.getAchievements());
-        resume.setLinkedInUrl(resumeDTO.getLinkedInUrl());
-        resume.setGithubUrl(resumeDTO.getGithubUrl());
-        resume.setPortfolioUrl(resumeDTO.getPortfolioUrl());
-        resume.setReferenceName(resumeDTO.getReferenceName());
-        resume.setReferenceEmail(resumeDTO.getReferenceEmail());
-        resume.setReferencePhone(resumeDTO.getReferencePhone());
-        // fix this Save the resume
-
-        // Convert experiences and qualifications
-        List<Experience> experiences = resumeDTO.getExperiences().stream()
-                .map(exp -> {
-                    Experience experience = new Experience();
-                    experience.setJobTitle(exp.getJobTitle());
-                    experience.setCompanyName(exp.getCompanyName());
-                    experience.setStartDate(exp.getStartDate());
-                    experience.setEndDate(exp.getEndDate());
-                    experience.setResume(resume);
-                    return experience;
-                })
-                .collect(Collectors.toList());
-
-        List<Qualification> qualifications = resumeDTO.getQualifications().stream()
-                .map(qual -> {
-                    Qualification qualification = new Qualification();
-                    qualification.setDegree(qual.getDegree());
-                    qualification.setInstitution(qual.getInstitution());
-                    qualification.setResume(resume);
-                    return qualification;
-                })
-                .collect(Collectors.toList());
-
-        resume.setExperiences(experiences);
-        resume.setQualifications(qualifications);
-
-
+    public Resume saveResume(ResumeDto resumeDto, Principal principal) {
+        Resume resume = modelMapper.map(resumeDto, Resume.class);
+        if (resume == null) {
+            throw new IllegalArgumentException("Mapping from ResumeDto to Resume failed.");
+        }
+        resume.setEmail(principal.getName());
+        resume.setCertifications(resumeDto.getCertifications() != null ? resumeDto.getCertifications() : Collections.emptyList());
+        resume.setAchievements(resumeDto.getAchievements() != null ? resumeDto.getAchievements() : Collections.emptyList());
         return resumeRepository.save(resume);
     }
-
     @Override
     @CachePut(value = "resumeCache", key = "#id")
     public ResumeDto saveAsStarred(Long id) {

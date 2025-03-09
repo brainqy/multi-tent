@@ -111,115 +111,114 @@ public class IScheduleEventServiceImpl implements IScheduleEventService {
             return List.of();
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public ResponseWrapperDto deleteScheduleEventById(Integer eventId, Principal principal) {
+@Override
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+public ResponseWrapperDto updateScheduleEvent(Integer eventId,
+                                              ScheduleEventDto scheduleEventDto,
+                                              Principal principal) {
+    if (ObjectUtils.isNotEmpty(eventId)) {
         ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
-        if (ObjectUtils.isNotEmpty(eventId)) {
+        Optional<ScheduleEvent> scheduleEventOptional = this.scheduleEventRepository.findById(eventId);
 
-            Optional<ScheduleEvent> scheduleEventOptional = this.scheduleEventRepository.findById(eventId);
-            if (scheduleEventOptional.isPresent()) {
-                ScheduleEvent scheduleEvent = scheduleEventOptional.get();
-                final String userName = principal.getName();
-                YtmsUserDto userDto = this.userService.getUserByEmailAdd(userName);
+        if (scheduleEventOptional.isPresent()) {
+            ScheduleEvent scheduleEvent = scheduleEventOptional.get();
+            final String userName = principal.getName();
+            YtmsUserDto userDto = this.userService.getUserByEmailAdd(userName);
 
-                if (StringUtils.equals(scheduleEvent.getScheduleUser().getEmailAdd(),
-                        userDto.getEmailAdd())) {
-                    Integer status = this.scheduleEventRepository.deleteScheduleEventByEventId(eventId, userName);
-                    if (status == 1) {
-                        responseWrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
-                        responseWrapperDto.setMessage("Event Deleted Successfully");
-                    } else {
-                        responseWrapperDto.setStatus(RequestStatusTypes.FAILED.toString());
-                        responseWrapperDto.setMessage("Failed to Delete Event");
-                    }
+            if (scheduleEvent.getScheduleUser() != null &&
+                StringUtils.equals(scheduleEvent.getScheduleUser().getEmailAdd(), userDto.getEmailAdd())) {
+
+                // Update only the fields that are not null in the scheduleEventDto
+                if (scheduleEventDto.getTitle() != null) {
+                    scheduleEvent.setTitle(scheduleEventDto.getTitle());
+                }
+                if (scheduleEventDto.getStart() != null) {
+                    scheduleEvent.setStart(scheduleEventDto.getStart());
+                }
+                if (scheduleEventDto.getEnd() != null) {
+                    scheduleEvent.setEnd(scheduleEventDto.getEnd());
+                }
+                if (scheduleEventDto.getColor() != null) {
+                    scheduleEvent.setColor(scheduleEventDto.getColor());
+                }
+                if (scheduleEventDto.getBookedBy() != null) {
+                    scheduleEvent.setBookedBy(scheduleEventDto.getBookedBy());
+                }
+                if (scheduleEventDto.getStatus() != null) {
+                    scheduleEvent.setStatus(scheduleEventDto.getStatus());
+                }
+
+            } else {
+                // Allow other users to update only the 'status' field
+                if (scheduleEventDto.getStatus() != null) {
+                    scheduleEvent.setStatus(scheduleEventDto.getStatus());
                 } else {
                     responseWrapperDto.setStatus(RequestStatusTypes.UNAUTHORIZED.toString());
-                    responseWrapperDto.setMessage("Not Authorized to delete this event");
+                    responseWrapperDto.setMessage("Not authorized to update fields other than status");
+                    responseWrapperDto.setData(null);
+                    return responseWrapperDto;
                 }
-            } else {
-                responseWrapperDto.setStatus(RequestStatusTypes.NOT_FOUND.toString());
-                responseWrapperDto.setMessage("Event not found with the provided id");
             }
+
+            // Save the updated event
+            scheduleEvent = this.scheduleEventRepository.save(scheduleEvent);
+
+            // Convert the updated entity back to DTO
+            scheduleEventDto = this.modelMapper.map(scheduleEvent, ScheduleEventDto.class);
+            scheduleEventDto.setScheduleUser(userDto);
+
+            responseWrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
+            responseWrapperDto.setMessage("Event updated successfully");
+            responseWrapperDto.setData(scheduleEventDto);
+            return responseWrapperDto;
+        } else {
+            responseWrapperDto.setStatus(RequestStatusTypes.NOT_FOUND.toString());
+            responseWrapperDto.setMessage("Event not found with the provided id");
             responseWrapperDto.setData(null);
             return responseWrapperDto;
-        } else
-            responseWrapperDto.setMessage("Event id is null or empty, please check & try again !");
-        return responseWrapperDto;
-        //throw new ApplicationException("Event id is null or empty, please check & try again !");
+        }
+    } else {
+        throw new ApplicationException("Event id is null or empty, please check & try again!");
     }
+}
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public ResponseWrapperDto updateScheduleEvent(Integer eventId,
-                                                  ScheduleEventDto scheduleEventDto,
-                                                  Principal principal) {
-        if (ObjectUtils.isNotEmpty(eventId)) {
-            ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
-            Optional<ScheduleEvent> scheduleEventOptional = this.scheduleEventRepository.findById(eventId);
+@Override
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+public ResponseWrapperDto deleteScheduleEventById(Integer eventId, Principal principal) {
+    ResponseWrapperDto responseWrapperDto = new ResponseWrapperDto();
+    if (ObjectUtils.isNotEmpty(eventId)) {
 
-            if (scheduleEventOptional.isPresent()) {
-                ScheduleEvent scheduleEvent = scheduleEventOptional.get();
-                final String userName = principal.getName();
-                YtmsUserDto userDto = this.userService.getUserByEmailAdd(userName);
+        Optional<ScheduleEvent> scheduleEventOptional = this.scheduleEventRepository.findById(eventId);
+        if (scheduleEventOptional.isPresent()) {
+            ScheduleEvent scheduleEvent = scheduleEventOptional.get();
+            final String userName = principal.getName();
+            YtmsUserDto userDto = this.userService.getUserByEmailAdd(userName);
 
-                // Allow the original creator to update all fields
-                if (StringUtils.equals(scheduleEvent.getScheduleUser().getEmailAdd(), userDto.getEmailAdd())) {
-
-                    // Update only the fields that are not null in the scheduleEventDto
-                    if (scheduleEventDto.getTitle() != null) {
-                        scheduleEvent.setTitle(scheduleEventDto.getTitle());
-                    }
-                    if (scheduleEventDto.getStart() != null) {
-                        scheduleEvent.setStart(scheduleEventDto.getStart());
-                    }
-                    if (scheduleEventDto.getEnd() != null) {
-                        scheduleEvent.setEnd(scheduleEventDto.getEnd());
-                    }
-                    if (scheduleEventDto.getColor() != null) {
-                        scheduleEvent.setColor(scheduleEventDto.getColor());
-                    }
-                    if (scheduleEventDto.getBookedBy() != null) {
-                        scheduleEvent.setBookedBy(scheduleEventDto.getBookedBy());
-                    }
-                    if (scheduleEventDto.getStatus() != null) {
-                        scheduleEvent.setStatus(scheduleEventDto.getStatus());
-                    }
-
+            if (scheduleEvent.getScheduleUser() != null &&
+                StringUtils.equals(scheduleEvent.getScheduleUser().getEmailAdd(), userDto.getEmailAdd())) {
+                Integer status = this.scheduleEventRepository.deleteScheduleEventByEventId(eventId, userName);
+                if (status == 1) {
+                    responseWrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
+                    responseWrapperDto.setMessage("Event Deleted Successfully");
                 } else {
-                    // Allow other users to update only the 'status' field
-                    if (scheduleEventDto.getStatus() != null) {
-                        scheduleEvent.setStatus(scheduleEventDto.getStatus());
-                    } else {
-                        responseWrapperDto.setStatus(RequestStatusTypes.UNAUTHORIZED.toString());
-                        responseWrapperDto.setMessage("Not authorized to update fields other than status");
-                        responseWrapperDto.setData(null);
-                        return responseWrapperDto;
-                    }
+                    responseWrapperDto.setStatus(RequestStatusTypes.FAILED.toString());
+                    responseWrapperDto.setMessage("Failed to Delete Event");
                 }
-
-                // Save the updated event
-                scheduleEvent = this.scheduleEventRepository.save(scheduleEvent);
-
-                // Convert the updated entity back to DTO
-                scheduleEventDto = this.modelMapper.map(scheduleEvent, ScheduleEventDto.class);
-                scheduleEventDto.setScheduleUser(userDto);
-
-                responseWrapperDto.setStatus(RequestStatusTypes.SUCCESS.toString());
-                responseWrapperDto.setMessage("Event updated successfully");
-                responseWrapperDto.setData(scheduleEventDto);
-                return responseWrapperDto;
             } else {
-                responseWrapperDto.setStatus(RequestStatusTypes.NOT_FOUND.toString());
-                responseWrapperDto.setMessage("Event not found with the provided id");
-                responseWrapperDto.setData(null);
-                return responseWrapperDto;
+                responseWrapperDto.setStatus(RequestStatusTypes.UNAUTHORIZED.toString());
+                responseWrapperDto.setMessage("Not Authorized to delete this event");
             }
         } else {
-            throw new ApplicationException("Event id is null or empty, please check & try again!");
+            responseWrapperDto.setStatus(RequestStatusTypes.NOT_FOUND.toString());
+            responseWrapperDto.setMessage("Event not found with the provided id");
         }
+        responseWrapperDto.setData(null);
+        return responseWrapperDto;
+    } else {
+        responseWrapperDto.setMessage("Event id is null or empty, please check & try again !");
+        return responseWrapperDto;
     }
-
+}
 
     @Override
     public List<ScheduleEventDto> getAllScheduleEventsExceptLoggedUser(Principal principal) {
