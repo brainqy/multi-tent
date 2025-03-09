@@ -241,7 +241,7 @@ public class YtmsUserServiceImpl implements IYtmsUserService {
         String password = map.get("password");
         String newEmail = new String(Base64.getDecoder().decode(email));
         Optional<YtmsUser> user = this.userRepository.getUserByEmail(newEmail);
-        if (user != null && StringUtils.isNotEmpty(password)) {
+        if (user.isPresent() && StringUtils.isNotEmpty(password)) {
             user.get().setPassword(this.passwordEncoder.encode(password));
             System.out.println(" changing password for " + user.toString());
             this.userRepository.save(user.get());
