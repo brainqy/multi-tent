@@ -34,24 +34,40 @@ public class AtsScanServiceImpl implements AtsScanService {
     private ModelMapper modelMapper;
     @Autowired
     private AtsRepository atsRepository;
-    public SectionDataWrapperDto generateReports(String resume, String jobDescription, Principal principal){
-double searchabilityWeight=0.1;
-double recruiterTipsWeihgt=0.2;
-double formattingWeight=0.1;
-double highlightWeight=0.2;
-double hardSkillWeight=0.3;
-double softSkillWeight=0.1;
-        SectionDataWrapperDto wrapper= new SectionDataWrapperDto();
-List<SectionDataDto> data= new ArrayList<>();
+
+@Override
+public SectionDataWrapperDto getLatestReport(Principal principal) {
+    Optional<SectionDataWrapper> latestReportOptional = Optional.ofNullable(atsRepository.findFirstByOrderByCreatedAtDesc());
+
+    if (latestReportOptional.isEmpty()) {
+        SectionDataWrapperDto defaultDto = new SectionDataWrapperDto();
+        defaultDto.setAllData(Collections.emptyList()); // Initialize to an empty list
+        return defaultDto;
+    }
+
+    SectionDataWrapper latestReport = latestReportOptional.get();
+    return modelMapper.map(latestReport, SectionDataWrapperDto.class);
+}
+
+    public SectionDataWrapperDto generateReports(String resume, String jobDescription, Principal principal) {
+        double searchabilityWeight = 0.1;
+        double recruiterTipsWeight = 0.2;
+        double formattingWeight = 0.1;
+        double highlightWeight = 0.2;
+        double hardSkillWeight = 0.3;
+        double softSkillWeight = 0.1;
+
+        SectionDataWrapperDto wrapper = new SectionDataWrapperDto();
+        List<SectionDataDto> data = new ArrayList<>();
         SectionDataDto sr = generateSerchabilityReport(resume, jobDescription);
         SectionDataDto rt = generateRecruiterTipsReport(resume, jobDescription);
-        SectionDataDto fr=generateFormattingReport(resume ,jobDescription);
-        SectionDataDto hr=generateHighlightsReport(resume,jobDescription);
-        SectionDataDto hs=generateHardSkillsReport(resume,jobDescription);
-        SectionDataDto ss=generateSoftSkillsReport(resume,jobDescription);
-        double finalProgress = 10*(sr.getPercentage()*searchabilityWeight + rt.getPercentage()*recruiterTipsWeihgt + fr.getPercentage()*formattingWeight + hr.getPercentage()*highlightWeight
-                + hr.getPercentage()*highlightWeight
-                + hs.getPercentage()*hardSkillWeight  + ss.getPercentage()*softSkillWeight)/6;
+        SectionDataDto fr = generateFormattingReport(resume, jobDescription);
+        SectionDataDto hr = generateHighlightsReport(resume, jobDescription);
+        SectionDataDto hs = generateHardSkillsReport(resume, jobDescription);
+        SectionDataDto ss = generateSoftSkillsReport(resume, jobDescription);
+        double finalProgress = 10 * (sr.getPercentage() * searchabilityWeight + rt.getPercentage() * recruiterTipsWeight + fr.getPercentage() * formattingWeight + hr.getPercentage() * highlightWeight
+                + hr.getPercentage() * highlightWeight
+                + hs.getPercentage() * hardSkillWeight + ss.getPercentage() * softSkillWeight) / 6;
 
         data.add(sr);
         data.add(rt);
@@ -61,31 +77,22 @@ List<SectionDataDto> data= new ArrayList<>();
         data.add(ss);
         wrapper.setAllData(data);
         wrapper.setFinalProgress(finalProgress);
-        LocalDateTime localDateTime= LocalDateTime.now();
+        LocalDateTime localDateTime = LocalDateTime.now();
 
-        String name= principal.getName();
+        String name = principal.getName();
         SectionDataWrapper wrapperEntity = modelMapper.map(wrapper, SectionDataWrapper.class);
+        if (wrapperEntity == null) {
+            wrapperEntity = new SectionDataWrapper();
+        }
         wrapperEntity.setCreatedBy(name);
         wrapperEntity.setJobTitle("Default Job Title");
         wrapperEntity.setCreatedAt(LocalDateTime.now());
         atsRepository.save(wrapperEntity);
+
+        // Set the createdBy field in the DTO
+        wrapper.setCreatedBy(name);
+
         return wrapper;
-    }
-
-    @Override
-    public SectionDataWrapperDto getLatestReport(Principal principal) {
-        Optional<SectionDataWrapper> latestReportOptional = Optional.ofNullable(atsRepository.findFirstByOrderByCreatedAtDesc());
-
-        if (latestReportOptional.isEmpty()) {
-            // Handle the case where no report is found, e.g., by returning a default DTO or throwing an exception
-            // For example, returning a default DTO:
-            SectionDataWrapperDto defaultDto = new SectionDataWrapperDto();
-            //defaultDto. setMessage("No report available"); // assuming SectionDataWrapperDto has a 'message' field
-            return defaultDto;
-        }
-
-        SectionDataWrapper latestReport = latestReportOptional.get();
-        return modelMapper.map(latestReport, SectionDataWrapperDto.class);
     }
 
     @Override

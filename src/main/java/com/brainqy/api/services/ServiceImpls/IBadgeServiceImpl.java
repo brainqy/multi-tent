@@ -41,17 +41,27 @@ public class IBadgeServiceImpl implements BadgeService {
     @Autowired
     private IYtmsUserService userService;
 
-    @Override
-    public void createBadge(BadgeDto badgeDto) {
-        Badge badge = new Badge();
-        badge.setName(badgeDto.getName());
-        badge.setDescription(badgeDto.getDescription());
-        badge.setIcon(badgeDto.getIcon());
-        badge.setBackgroundColor(badgeDto.getBackgroundColor());
-        badge.setRule(badgeDto.getRule());
-        badge.setThreshold(badgeDto.getThreshold());
-        badgeRepository.save(badge);
+@Override
+public void createBadge(BadgeDto badgeDto) {
+    if (badgeDto.getName() == null || badgeDto.getName().isEmpty()) {
+        throw new IllegalArgumentException("Badge name cannot be empty");
     }
+    if (badgeDto.getDescription() == null) {
+        throw new IllegalArgumentException("Badge description cannot be null");
+    }
+    if (badgeDto.getThreshold() < 0) {
+        throw new IllegalArgumentException("Badge threshold must be non-negative");
+    }
+
+    Badge badge = new Badge();
+    badge.setName(badgeDto.getName());
+    badge.setDescription(badgeDto.getDescription());
+    badge.setIcon(badgeDto.getIcon());
+    badge.setBackgroundColor(badgeDto.getBackgroundColor());
+    badge.setRule(badgeDto.getRule());
+    badge.setThreshold(badgeDto.getThreshold());
+    badgeRepository.save(badge);
+}
 
     @Override
     public List<BadgeDto> getAllBadges() {
